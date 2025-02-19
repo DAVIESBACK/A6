@@ -1,14 +1,12 @@
 #include "sign_up.h"
-
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-    Window myWindow(hInstance, "MyWindowClass", "My Win32 App");
-
-    if (!myWindow.Create(800, 600)) {
-        return -1;
-    }
-
-    myWindow.Show(nCmdShow);
-    myWindow.MessageLoop();
-    
-    return 0;
-}
+#include "login.h"
+#include "home.h"
+#include "zone1.h"
+#include "zone2.h"
+#include "zone3.h"
+#include "hotel.h"
+#include "info.h"
+#include "result.h"
+#include <windows.h>
+#include <string>
+#include <fstream> 
