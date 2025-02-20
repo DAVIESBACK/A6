@@ -37,12 +37,23 @@ void signUp() {
     cout << "Enter new password: ";
     cin >> newUser.password;
     
+    // Password confirmation
+    string confirmPassword;
+    cout << "Confirm password: ";
+    cin >> confirmPassword;
+
+    if (newUser.password != confirmPassword) {
+        cout << "Passwords do not match. Try again.\n";
+        return;
+    }
+    
     ofstream file("users.txt", ios::app);
     file << newUser.username << " " << newUser.password << "\n";
     file.close();
     
     cout << "Sign-up successful!\n";
 }
+
 
 bool login() {
     string username, password;
