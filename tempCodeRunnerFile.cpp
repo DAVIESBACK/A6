@@ -1,12 +1,12 @@
-#include "zone3.h"
+#include "zone1.h"
 
 int main() {
-    vector<Zone3> zone3s = {
-        {1, "Warisa Apartment", "Warisa Road 12", 4900, true},
-        {2, "P.S Mansion", "PS Street 34", 5300, true},
-        {3, "Baan Tarnkam", "Tankam Road 78", 4200, true},
-        {4, "Tarnthong Place Apartment Chiangmai", "Tarnthong Road 90", 5100, true},
-        {5, "Thongtara Monte", "Monte Street 109", 5700 ,true }
+    vector<Zone1> zone1s = {
+        {1, "Uniloft Chiangmai", "Chiangmai Road 123", 6300, true},
+        {2, "Home Hills", "Hillside Road 45", 4500, true},
+        {3, "Baan Im Rak", "Rak Street 67", 4000, true},
+        {4, "Sanguanmalee Mansion", "Sanguan Road 89", 5500, true},
+        {5, "Kai Golden Place", "Golden Road 101", 6000, true }
     };
 
     int choice;
@@ -20,10 +20,10 @@ int main() {
 
         switch (choice) {
             case 1:
-                displayzone3s(zone3s);
+                displayzone1s(zone1s);
                 break;
             case 2:
-                bookzone3(zone3s);
+                bookzone1(zone1s);
                 break;
             case 3:
                 cout << "Thank you for using our service!\n";

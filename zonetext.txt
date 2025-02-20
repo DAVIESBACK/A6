@@ -1,0 +1,20 @@
+{"Zone 1", { {"Uniloft Chiangmai", 5, "Chiangmai Road 123", 5000},
+ {"Home Hills", 5, "Hillside Road 45", 4500}, 
+{"Baan Im Rak", 5, "Rak Street 67", 4000},
+ {"Sanguanmalee Mansion", 5, "Sanguan Road 89", 5500}, 
+{"Kai Golden Place", 5, "Golden Road 101", 6000} }},
+    
+
+{"Zone 2", { {"Phufa Place", 5, "Phufa Lane 21", 4800},
+ {"The Greenery Landmark", 5, "Green Street 55", 5200},
+ {"Pojai Apartment", 5, "Pojai Road 32", 4300},
+ {"Kiang Doi Place", 5, "Doi Street 76", 4700}, 
+{"Baan Pranee (Jed Yod)", 5, "Jed Yod 99", 4600} }},
+    
+
+{"Zone 3", { {"Warisa Apartment", 5, "Warisa Road 12", 4900},
+ {"P.S. Mansion", 5, "PS Street 34", 5300},
+ {"Baan Tarnkam", 5, "Tarnkam Road 78", 4200}, 
+{"Tarnthong Place Apartment Chiangmai", 5, "Tarnthong Road 90", 5100},
+ {"Thongtara Monte", 5, "Monte Street 109", 5700} }}
+;
