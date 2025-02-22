@@ -3,7 +3,7 @@
 int main() {
     int choice;
     while (true) {
-        cout << "\n1. Login\n2. Create an account\n3. Exit\nEnter choice: ";
+        cout << "\n1. Login\n2. Create an account\n3. Exit\nEnter choice: "; //
         cin >> choice;
         
         switch (choice) {

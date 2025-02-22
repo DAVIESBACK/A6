@@ -2,51 +2,32 @@
 #define ZONE1_H
 
 #include <iostream>
+#include <fstream>
 #include <vector>
-#include <algorithm>  // สำหรับ begin() และ end()
+#include <string>
+
 using namespace std;
 
-// Structure for Dorm information
 struct Zone1 {
     int id;
     string name;
-    string location;
-    double price;
-    bool isAvailable;
+    string address;
+    int price;
+    bool available;
 };
 
-// Function prototypes
-void displayzone1s(const vector<Zone1> &Zone1s) {
-    cout << "\n=== All zone Details ===\n";
-    for (const auto &Zone1 : Zone1s) {
-        cout << "ID: " << Zone1.id << endl;
-        cout << "Name: " << Zone1.name << endl;
-        cout << "Location: " << Zone1.location << endl;
-        cout << "Price: " << Zone1.price << " Baht/month" << endl;
-        cout << "Status: " << (Zone1.isAvailable ? "Available" : "Not Available") << endl;
+void displayZone1s(const vector<Zone1>& zone1s) {
+    for (const auto& zone : zone1s) {
+        cout << "ID: " << zone.id << endl;
+        cout << "Name: " << zone.name << endl;
+        cout << "Address: " << zone.address << endl;
+        cout << "Price: " << zone.price << endl;
+        cout << "Available: " << (zone.available ? "Yes" : "No") << endl;
         cout << "-----------------------------" << endl;
     }
 }
 
-
-void bookzone1(vector<Zone1> &Zone1s) {
-    int id;
-    cout << "\nEnter the zone ID you want to book: ";
-    cin >> id;
-
-    for (auto &Zone1 : Zone1s) {
-        if (Zone1.id == id) {
-            if (Zone1.isAvailable) {
-                Zone1.isAvailable = false;
-                cout << "Successfully booked " << Zone1.name << "!\n";
-            } else {
-                cout << "Sorry! This zone is already booked.\n";
-            }
-            return;
-        }
-    }
-    cout << "No zone found with this ID.\n";
-}
-
+void bookZone1(vector<Zone1>& zone1s);
+void loadZone1Data(vector<Zone1>& zone1s);  // เพิ่มฟังก์ชันนี้
 
 #endif

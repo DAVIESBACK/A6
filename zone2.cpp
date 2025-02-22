@@ -1,37 +1,31 @@
 #include "zone2.h"
 
+void loadZone2Data(vector<Zone2>& zone2s) {
+    ifstream file("zone2.txt");
+    if (!file) {
+        cerr << "Error: Could not open zone2.txt\n";
+        return;
+    }
+
+    zone2s.clear(); // เคลียร์ข้อมูลเก่า
+    int id, price;
+    string name, address;
+    bool available;
+
+    while (file >> id) {
+        file.ignore();  // ข้ามช่องว่าง
+        getline(file, name);
+        getline(file, address);
+        file >> price >> available;
+        zone2s.push_back({id, name, address, price, available});
+    }
+
+    file.close();
+}
+
 int main() {
-    vector<Zone2> zone2s = {
-        {1, "Phufa Place", "Phufa Lane 21", 4800, true},
-        {2, "The Greeny Landmark", "Green Street 55", 5200, true},
-        {3, "Pojai Apartment", "Pojai Road 32", 4300, true},
-        {4, "Kiang Doi Place", "Doi Street 76", 4700, true},
-        {5, "Baan Pranee(Jed Yod)", "Jed Yod 99", 4600 ,true }
-    };
-
-    int choice;
-    do {
-        cout << "\n=== zone Booking System ===\n";
-        cout << "1. Display All zone Details\n";
-        cout << "2. Book a zone\n";
-        cout << "3. Exit\n";
-        cout << "Please choose an option: ";
-        cin >> choice;
-
-        switch (choice) {
-            case 1:
-                displayzone2s(zone2s);
-                break;
-            case 2:
-                bookzone2(zone2s);
-                break;
-            case 3:
-                cout << "Thank you for using our service!\n";
-                break;
-            default:
-                cout << "Invalid option!\n";
-        }
-    } while (choice != 3);
-
+    vector<Zone2> zone2s;
+    loadZone2Data(zone2s);
+    displayZone2s(zone2s);
     return 0;
 }
