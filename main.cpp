@@ -93,7 +93,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             CreateWindow("BUTTON", "Sign Up", WS_VISIBLE | WS_CHILD, 50, 100, 150, 40, hwnd, (HMENU)ID_SIGNUP_BUTTON, NULL, NULL);
             CreateWindow("BUTTON", "Booking Window", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)ID_BOOKING_BUTTON, NULL, NULL);
             CreateWindow("BUTTON", "Zone Selection", WS_VISIBLE | WS_CHILD, 50, 200, 150, 40, hwnd, (HMENU)ID_ZONE_SELECT_BUTTON, NULL, NULL);
-            CreateWindow("BUTTON", "Exit", WS_VISIBLE | WS_CHILD, 50, 250, 150, 40, hwnd, (HMENU)ID_EXIT_BUTTON, NULL, NULL);
+            CreateWindow("BUTTON", "E
+                xit", WS_VISIBLE | WS_CHILD, 50, 250, 150, 40, hwnd, (HMENU)ID_EXIT_BUTTON, NULL, NULL);
             break;
         case WM_COMMAND:
             switch(LOWORD(wParam))
