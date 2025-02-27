@@ -55,6 +55,29 @@ void ShowZone3Images(HWND hwnd, HINSTANCE hInst);
 HWND hUsername, hPassword, hConfirmPassword, hMainWnd;
 std::string loggedInUser;
 
+bool IsUserExists(const std::string& username) {
+    std::ifstream file("users.txt");
+    if (!file) {
+        return false;
+    }
+    std::string storedUser, storedPass;
+    while (file >> storedUser >> storedPass) {
+        if (storedUser == username) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void RegisterUser(const std::string& username, const std::string& password) {
+    std::ofstream file("users.txt", std::ios::app);
+    if (file) {
+        file << username << " " << password << std::endl;
+    } else {
+        MessageBox(NULL, "ไม่สามารถเปิดไฟล์ users.txt เพื่อบันทึกข้อมูลได้", "Error", MB_OK | MB_ICONERROR);
+    }
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     WNDCLASS wc = {0};
     wc.lpfnWndProc = WndProc;
@@ -178,29 +201,41 @@ LRESULT CALLBACK LoginProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 LRESULT CALLBACK SignupProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch (msg) {
         case WM_CREATE:
-            CreateWindow("STATIC", "Username:", WS_VISIBLE | WS_CHILD,
-                         20, 20, 80, 25, hwnd, NULL, NULL, NULL);
-            hUsername = CreateWindow("EDIT", "", WS_VISIBLE | WS_CHILD | WS_BORDER,
-                         110, 20, 150, 25, hwnd, (HMENU)ID_USERNAME, NULL, NULL);
-            CreateWindow("STATIC", "Password:", WS_VISIBLE | WS_CHILD,
-                         20, 60, 80, 25, hwnd, NULL, NULL, NULL);
-            hPassword = CreateWindow("EDIT", "", WS_VISIBLE | WS_CHILD | WS_BORDER | ES_PASSWORD,
-                         110, 60, 150, 25, hwnd, (HMENU)ID_PASSWORD, NULL, NULL);
-            CreateWindow("STATIC", "Confirm Password:", WS_VISIBLE | WS_CHILD,
-                         20, 100, 120, 25, hwnd, NULL, NULL, NULL);
-            hConfirmPassword = CreateWindow("EDIT", "", WS_VISIBLE | WS_CHILD | WS_BORDER | ES_PASSWORD,
-                         110, 100, 150, 25, hwnd, (HMENU)ID_CONFIRM_PASSWORD, NULL, NULL);
-            CreateWindow("BUTTON", "Sign Up", WS_VISIBLE | WS_CHILD,
-                         20, 140, 80, 30, hwnd, (HMENU)ID_SUBMIT_SIGNUP, NULL, NULL);
+            CreateWindow("STATIC", "Username:", WS_VISIBLE | WS_CHILD, 20, 20, 80, 25, hwnd, NULL, NULL, NULL);
+            hUsername = CreateWindow("EDIT", "", WS_VISIBLE | WS_CHILD | WS_BORDER, 110, 20, 150, 25, hwnd, (HMENU)ID_USERNAME, NULL, NULL);
+            
+            CreateWindow("STATIC", "Password:", WS_VISIBLE | WS_CHILD, 20, 60, 80, 25, hwnd, NULL, NULL, NULL);
+            hPassword = CreateWindow("EDIT", "", WS_VISIBLE | WS_CHILD | WS_BORDER | ES_PASSWORD, 110, 60, 150, 25, hwnd, (HMENU)ID_PASSWORD, NULL, NULL);
+            
+            CreateWindow("STATIC", "Confirm Password:", WS_VISIBLE | WS_CHILD, 20, 100, 120, 25, hwnd, NULL, NULL, NULL);
+            hConfirmPassword = CreateWindow("EDIT", "", WS_VISIBLE | WS_CHILD | WS_BORDER | ES_PASSWORD, 150, 100, 150, 25, hwnd, (HMENU)ID_CONFIRM_PASSWORD, NULL, NULL);
+            
+            CreateWindow("BUTTON", "Sign Up", WS_VISIBLE | WS_CHILD, 20, 140, 80, 30, hwnd, (HMENU)ID_SUBMIT_SIGNUP, NULL, NULL);
             break;
+        
         case WM_COMMAND:
             if (LOWORD(wParam) == ID_SUBMIT_SIGNUP) {
+                char username[30], password[30], confirmPassword[30];
+                GetWindowText(hUsername, username, 30);
+                GetWindowText(hPassword, password, 30);
+                GetWindowText(hConfirmPassword, confirmPassword, 30);
+                
+                if (strcmp(password, confirmPassword) != 0) {
+                    MessageBox(hwnd, "Invalid username or password", "Error", MB_OK | MB_ICONERROR);
+                } else if (IsUserExists(username)) {
+                    MessageBox(hwnd, "Username is already exist", "Error", MB_OK | MB_ICONERROR);
+                } else {
+                    RegisterUser(username, password);
+                    MessageBox(hwnd, "sign up successful!!", "Success", MB_OK);
+                }
                 DestroyWindow(hwnd);
             }
             break;
+        
         case WM_CLOSE:
             DestroyWindow(hwnd);
             break;
+        
         default:
             return DefWindowProc(hwnd, msg, wParam, lParam);
     }

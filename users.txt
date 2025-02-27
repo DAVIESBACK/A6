@@ -2,3 +2,6 @@ nat 123456
 fah_hh 999999
 hhfv jgfv
 jhhghh hj
+dd 5555
+k 1234
+pookuy 0
