@@ -179,6 +179,11 @@ LRESULT CALLBACK AuthWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 
 // ฟังก์ชันบันทึกข้อมูลผู้ใช้
 bool SaveUserData(const std::string& username, const std::string& password) {
+    if (password.length() < 8) {
+        MessageBox(NULL, "Password must be at least 8 characters long!", "Error", MB_OK | MB_ICONERROR);
+        return false;  // หยุดการบันทึก
+    }
+
     std::ifstream inFile("users.txt");
     std::string user, pass;
 
@@ -186,7 +191,7 @@ bool SaveUserData(const std::string& username, const std::string& password) {
     while (inFile >> user >> pass) {
         if (user == username) {
             MessageBox(NULL, "Username already exists! Please choose another.", "Error", MB_OK | MB_ICONERROR);
-            return false;  // หยุดการบันทึก
+            return false;
         }
     }
     inFile.close();
@@ -199,6 +204,7 @@ bool SaveUserData(const std::string& username, const std::string& password) {
 
     return true;
 }
+
 
 
 // ฟังก์ชันตรวจสอบข้อมูลผู้ใช้
