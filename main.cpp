@@ -312,29 +312,29 @@ LRESULT CALLBACK Zone1WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 LRESULT CALLBACK Zone2WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch (msg) {
     case WM_CREATE:
-        CreateWindow("BUTTON", "1. Place A", WS_VISIBLE | WS_CHILD, 50, 50, 150, 40, hwnd, (HMENU)501, NULL, NULL);
-        CreateWindow("BUTTON", "2. Place B", WS_VISIBLE | WS_CHILD, 50, 100, 150, 40, hwnd, (HMENU)502, NULL, NULL);
-        CreateWindow("BUTTON", "3. Place C", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)503, NULL, NULL);
-        CreateWindow("BUTTON", "4. Place D", WS_VISIBLE | WS_CHILD, 50, 200, 150, 40, hwnd, (HMENU)504, NULL, NULL);
-        CreateWindow("BUTTON", "5. Place E", WS_VISIBLE | WS_CHILD, 50, 250, 150, 40, hwnd, (HMENU)405, NULL, NULL);
+        CreateWindow("BUTTON", "1. Phufa Place Information", WS_VISIBLE | WS_CHILD, 50, 50, 150, 40, hwnd, (HMENU)501, NULL, NULL);
+        CreateWindow("BUTTON", "2. The Greenery Landmark Information", WS_VISIBLE | WS_CHILD, 50, 100, 150, 40, hwnd, (HMENU)502, NULL, NULL);
+        CreateWindow("BUTTON", "3. Pojai Apartment Information", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)503, NULL, NULL);
+        CreateWindow("BUTTON", "4. Kiang Doi Place Information", WS_VISIBLE | WS_CHILD, 50, 200, 150, 40, hwnd, (HMENU)504, NULL, NULL);
+        CreateWindow("BUTTON", "5. Baan Pranee (Jed Yod) Information", WS_VISIBLE | WS_CHILD, 50, 250, 150, 40, hwnd, (HMENU)505, NULL, NULL);
         CreateWindow("BUTTON", "Back", WS_VISIBLE | WS_CHILD, 50, 300, 150, 40, hwnd, (HMENU)506, NULL, NULL);
         break;
     case WM_COMMAND:
         switch (LOWORD(wParam)) {
         case 501:
-            MessageBox(hwnd, "You selected Place A", "Zone 2", MB_OK);
+            MessageBox(hwnd, "You selected Phufa Place Information", "Zone 2", MB_OK);
             break;
         case 502:
-            MessageBox(hwnd, "You selected Place B", "Zone 2", MB_OK);
+            MessageBox(hwnd, "You selected The Greenery Landmark Information", "Zone 2", MB_OK);
             break;
         case 503:
-            MessageBox(hwnd, "You selected Place C", "Zone 2", MB_OK);
+            MessageBox(hwnd, "You selected Pojai Apartment Information", "Zone 2", MB_OK);
             break;
         case 504:
-            MessageBox(hwnd, "You selected Place D", "Zone 2", MB_OK);
+            MessageBox(hwnd, "You selected Kiang Doi Place Information", "Zone 2", MB_OK);
             break;
         case 505:
-            MessageBox(hwnd, "You selected Place E", "Zone 2", MB_OK);
+            MessageBox(hwnd, "You selected Baan Pranee (Jed Yod) Information", "Zone 2", MB_OK);
             break;
         case 506:  // ปุ่ม Back
             DestroyWindow(hwnd);  // ปิดหน้าต่าง Zone ปัจจุบัน
@@ -354,29 +354,29 @@ LRESULT CALLBACK Zone2WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 LRESULT CALLBACK Zone3WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch (msg) {
     case WM_CREATE:
-        CreateWindow("BUTTON", "1. Spot X", WS_VISIBLE | WS_CHILD, 50, 50, 150, 40, hwnd, (HMENU)501, NULL, NULL);
-        CreateWindow("BUTTON", "2. Spot Y", WS_VISIBLE | WS_CHILD, 50, 100, 150, 40, hwnd, (HMENU)502, NULL, NULL);
-        CreateWindow("BUTTON", "3. Spot Z", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)503, NULL, NULL);
-        CreateWindow("BUTTON", "4. Spot W", WS_VISIBLE | WS_CHILD, 50, 200, 150, 40, hwnd, (HMENU)504, NULL, NULL);
-        CreateWindow("BUTTON", "5. Spot V", WS_VISIBLE | WS_CHILD, 50, 250, 150, 40, hwnd, (HMENU)505, NULL, NULL);
+        CreateWindow("BUTTON", "1. Warisa Apartment Information", WS_VISIBLE | WS_CHILD, 50, 50, 150, 40, hwnd, (HMENU)601, NULL, NULL);
+        CreateWindow("BUTTON", "2. P.S. Mansion Information", WS_VISIBLE | WS_CHILD, 50, 100, 150, 40, hwnd, (HMENU)602, NULL, NULL);
+        CreateWindow("BUTTON", "3. Baan Tarnkam Information", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)603, NULL, NULL);
+        CreateWindow("BUTTON", "4. Tarnthong Place Apartment Information", WS_VISIBLE | WS_CHILD, 50, 200, 150, 40, hwnd, (HMENU)604, NULL, NULL);
+        CreateWindow("BUTTON", "5. Thongtara Monte Information", WS_VISIBLE | WS_CHILD, 50, 250, 150, 40, hwnd, (HMENU)605, NULL, NULL);
         CreateWindow("BUTTON", "Back", WS_VISIBLE | WS_CHILD, 50, 300, 150, 40, hwnd, (HMENU)606, NULL, NULL);
         break;
     case WM_COMMAND:
         switch (LOWORD(wParam)) {
         case 601:
-            MessageBox(hwnd, "You selected Spot X", "Zone 3", MB_OK);
+            MessageBox(hwnd, "Warisa ApartmentWarisa Road 124900 1","Zone 3", MB_OK);
             break;
         case 602:
-            MessageBox(hwnd, "You selected Spot G", "Zone 3", MB_OK);
+            MessageBox(hwnd, "P.S. Mansion PS Street 34 5300 1", "Zone 3", MB_OK);
             break;
         case 603:
-            MessageBox(hwnd, "You selected Spot H", "Zone 3", MB_OK);
+            MessageBox(hwnd, "You selected Baan Tarnkam Information", "Zone 3", MB_OK);
             break;
         case 604:
-            MessageBox(hwnd, "You selected Spot I", "Zone 3", MB_OK);
+            MessageBox(hwnd, "You selected Tarnthong Place Apartment Information", "Zone 3", MB_OK);
             break;
         case 605:
-            MessageBox(hwnd, "You selected Spot J", "Zone 3", MB_OK);
+            MessageBox(hwnd, "You selected Thongtara Monte Information", "Zone 3", MB_OK);
             break;
         case 606:  // ปุ่ม Back
             DestroyWindow(hwnd);  // ปิดหน้าต่าง Zone ปัจจุบัน
