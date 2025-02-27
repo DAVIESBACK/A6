@@ -1,477 +1,393 @@
 #include <windows.h>
-#include <iostream>
+#include <fstream>
+#include <string>
 
-// ====== Constants สำหรับ Main Menu ======
-#define ID_LOGIN_BUTTON         1001
-#define ID_SIGNUP_BUTTON        1002
-#define ID_BOOKING_BUTTON       1003
-#define ID_ZONE_SELECT_BUTTON   1004
-#define ID_EXIT_BUTTON          1005
-
-// ====== Constants สำหรับ Zone Selection Window ======
-#define ID_ZONE1_BUTTON         9001
-#define ID_ZONE2_BUTTON         9002
-#define ID_ZONE3_BUTTON         9003
-#define ID_ZONELOGOUT_BUTTON    9004
-
-// ====== Constants สำหรับ Zone 1 Window ======
-#define ID_Z1_BTN_HISTORY       101
-#define ID_Z1_BTN_HOME          102
-#define ID_Z1_BTN_LOGOUT        103
-#define ID_Z1_BTN_UNL           104
-#define ID_Z1_BTN_HH            105
-#define ID_Z1_BTN_BAN           106
-#define ID_Z1_BTN_ML            107
-#define ID_Z1_BTN_KG            108
-
-// ====== Constants สำหรับ Zone 2 Window ======
-#define ID_Z2_BTN_HISTORY       201
-#define ID_Z2_BTN_HOME          202
-#define ID_Z2_BTN_LOGOUT        203
-#define ID_Z2_BTN_PP            209
-#define ID_Z2_BTN_GL            210
-#define ID_Z2_BTN_PJ            211
-#define ID_Z2_BTN_KD            212
-#define ID_Z2_BTN_BAAN          213
-
-// ====== Constants สำหรับ Zone 3 Window ======
-#define ID_Z3_BTN_HISTORY       301
-#define ID_Z3_BTN_HOME          302
-#define ID_Z3_BTN_LOGOUT        303
-#define ID_Z3_BTN_WARISA        314
-#define ID_Z3_BTN_PS            315
-#define ID_Z3_BTN_BAAAN         316
-#define ID_Z3_BTN_TARNTHONG     317
-#define ID_Z3_BTN_THONGTARA     318
-
-// ----- Forward Declarations -----
+// ฟังก์ชันและตัวแปรที่จำเป็น
 LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
-LRESULT CALLBACK ZoneSelectWndProc(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK AuthWndProc(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK ZoneSelectionWndProc(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK Zone1WndProc(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK Zone2WndProc(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK Zone3WndProc(HWND, UINT, WPARAM, LPARAM);
 
-void ShowZoneSelectWindow(HINSTANCE hInst, HWND parent);
-void ShowZone1Window(HINSTANCE hInst, HWND parent);
-void ShowZone2Window(HINSTANCE hInst, HWND parent);
-void ShowZone3Window(HINSTANCE hInst, HWND parent);
+HINSTANCE hInst;
+HWND hMainWnd;
+HWND hUsername, hPassword, hConfirmPassword;
 
-// ====== Main Entry Point ======
-int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR lpCmdLine, int nCmdShow)
-{
-    // ลงทะเบียนคลาสหน้าต่างหลัก (Main Menu)
-    WNDCLASS wc = {0};
-    wc.lpfnWndProc   = MainWndProc;
-    wc.hInstance     = hInst;
-    wc.lpszClassName = "MainMenuWindow";
-    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
-    RegisterClass(&wc);
-    
-    HWND hwndMain = CreateWindow("MainMenuWindow", "Main Menu", 
-                                 WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-                                 CW_USEDEFAULT, CW_USEDEFAULT, 600, 400,
-                                 NULL, NULL, hInst, NULL);
-    if (!hwndMain)
+#define ID_LOGIN_BUTTON 201
+#define ID_SIGNUP_BUTTON 202
+#define ID_EXIT_BUTTON 203
+#define ID_SUBMIT_LOGIN 204
+#define ID_SUBMIT_SIGNUP 205
+
+// ฟังก์ชันแสดงหน้าต่าง Login/Sign Up
+void ShowAuthWindow(bool isSignUp);
+// ฟังก์ชันบันทึกข้อมูลผู้ใช้
+bool SaveUserData(const std::string& username, const std::string& password);
+// ฟังก์ชันตรวจสอบข้อมูลผู้ใช้
+bool AuthenticateUser(const std::string& username, const std::string& password);
+// ฟังก์ชันแสดงหน้าต่างเลือก Zone
+void ShowZoneSelectionWindow();
+// ฟังก์ชันแสดงหน้าต่าง Zone
+void ShowZoneWindow(int zoneNumber);
+
+// ฟังก์ชันหลัก
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    hInst = hInstance;
+
+    // กำหนดคลาสหน้าต่างหลัก
+    WNDCLASS wc = {};
+    wc.lpfnWndProc = MainWndProc;
+    wc.hInstance = hInstance;
+    wc.lpszClassName = "MainWindow";
+    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+
+    if (!RegisterClass(&wc)) {
+        MessageBox(NULL, "Window Registration Failed!", "Error", MB_ICONERROR | MB_OK);
         return 0;
-    
+    }
+
+    // สร้างหน้าต่างหลัก
+    hMainWnd = CreateWindow("MainWindow", "Booking System", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 400, 400, NULL, NULL, hInstance, NULL);
+    if (!hMainWnd) {
+        MessageBox(NULL, "Window Creation Failed!", "Error", MB_ICONERROR | MB_OK);
+        return 0;
+    }
+
+    // แสดงหน้าต่างหลัก
+    ShowWindow(hMainWnd, nCmdShow);
+    UpdateWindow(hMainWnd);
+
+    // วนลูปรับข้อความจากระบบ
     MSG msg;
-    while (GetMessage(&msg, NULL, 0, 0))
-    {
+    while (GetMessage(&msg, NULL, 0, 0)) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
     return (int)msg.wParam;
 }
 
-// ====== Main Menu Window Procedure ======
-LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    switch(msg)
-    {
-        case WM_CREATE:
-            CreateWindow("BUTTON", "Login", WS_VISIBLE | WS_CHILD, 50, 50, 150, 40, hwnd, (HMENU)ID_LOGIN_BUTTON, NULL, NULL);
-            CreateWindow("BUTTON", "Sign Up", WS_VISIBLE | WS_CHILD, 50, 100, 150, 40, hwnd, (HMENU)ID_SIGNUP_BUTTON, NULL, NULL);
-            CreateWindow("BUTTON", "Booking Window", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)ID_BOOKING_BUTTON, NULL, NULL);
-            CreateWindow("BUTTON", "Zone Selection", WS_VISIBLE | WS_CHILD, 50, 200, 150, 40, hwnd, (HMENU)ID_ZONE_SELECT_BUTTON, NULL, NULL);
-            CreateWindow("BUTTON", "E
-                xit", WS_VISIBLE | WS_CHILD, 50, 250, 150, 40, hwnd, (HMENU)ID_EXIT_BUTTON, NULL, NULL);
+// ฟังก์ชันจัดการหน้าต่างหลัก
+LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    switch (msg) {
+    case WM_CREATE:
+        // สร้างปุ่ม Login, Sign Up, และ Exit
+        CreateWindow("BUTTON", "Login", WS_VISIBLE | WS_CHILD, 50, 50, 150, 40, hwnd, (HMENU)ID_LOGIN_BUTTON, NULL, NULL);
+        CreateWindow("BUTTON", "Sign Up", WS_VISIBLE | WS_CHILD, 50, 100, 150, 40, hwnd, (HMENU)ID_SIGNUP_BUTTON, NULL, NULL);
+        CreateWindow("BUTTON", "Exit", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)ID_EXIT_BUTTON, NULL, NULL);
+        break;
+    case WM_COMMAND:
+        switch (LOWORD(wParam)) {
+        case ID_LOGIN_BUTTON:
+            ShowAuthWindow(false);  // เปิดหน้าต่าง Login
             break;
-        case WM_COMMAND:
-            switch(LOWORD(wParam))
-            {
-                case ID_ZONE_SELECT_BUTTON:
-                    ShowZoneSelectWindow(GetModuleHandle(NULL), hwnd);
-                    break;
-                case ID_EXIT_BUTTON:
-                    PostQuitMessage(0);
-                    break;
-                // ส่วนของ Login, Sign Up, Booking Window ให้เติมโค้ดตามต้องการ
-                default:
-                    break;
-            }
+        case ID_SIGNUP_BUTTON:
+            ShowAuthWindow(true);   // เปิดหน้าต่าง Sign Up
             break;
-        case WM_DESTROY:
-            PostQuitMessage(0);
+        case ID_EXIT_BUTTON:
+            PostQuitMessage(0);    // ปิดโปรแกรม
             break;
-        default:
-            return DefWindowProc(hwnd, msg, wParam, lParam);
+        }
+        break;
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        break;
+    default:
+        return DefWindowProc(hwnd, msg, wParam, lParam);
     }
     return 0;
 }
 
-// ====== Zone Selection Window Procedure ======
-LRESULT CALLBACK ZoneSelectWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    switch(msg)
-    {
-        case WM_CREATE:
-            CreateWindow("BUTTON", "Zone 1", WS_VISIBLE | WS_CHILD, 50, 50, 150, 40, hwnd, (HMENU)ID_ZONE1_BUTTON, GetModuleHandle(NULL), NULL);
-            CreateWindow("BUTTON", "Zone 2", WS_VISIBLE | WS_CHILD, 50, 110, 150, 40, hwnd, (HMENU)ID_ZONE2_BUTTON, GetModuleHandle(NULL), NULL);
-            CreateWindow("BUTTON", "Zone 3", WS_VISIBLE | WS_CHILD, 50, 170, 150, 40, hwnd, (HMENU)ID_ZONE3_BUTTON, GetModuleHandle(NULL), NULL);
-            CreateWindow("BUTTON", "Logout", WS_VISIBLE | WS_CHILD, 50, 230, 150, 40, hwnd, (HMENU)ID_ZONELOGOUT_BUTTON, GetModuleHandle(NULL), NULL);
-            break;
-        case WM_COMMAND:
-            switch(LOWORD(wParam))
-            {
-                case ID_ZONE1_BUTTON:
-                    ShowZone1Window(GetModuleHandle(NULL), hwnd);
-                    break;
-                case ID_ZONE2_BUTTON:
-                    ShowZone2Window(GetModuleHandle(NULL), hwnd);
-                    break;
-                case ID_ZONE3_BUTTON:
-                    ShowZone3Window(GetModuleHandle(NULL), hwnd);
-                    break;
-                case ID_ZONELOGOUT_BUTTON:
+// ฟังก์ชันแสดงหน้าต่าง Login/Sign Up
+void ShowAuthWindow(bool isSignUp) {
+    WNDCLASS wc = {};
+    wc.lpfnWndProc = AuthWndProc;
+    wc.hInstance = hInst;
+    wc.lpszClassName = "AuthWindow";
+    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+
+    if (!GetClassInfo(hInst, "AuthWindow", &wc)) {
+        RegisterClass(&wc);
+    }
+
+    // สร้างหน้าต่าง Login/Sign Up
+    HWND hAuthWnd = CreateWindow("AuthWindow", isSignUp ? "Sign Up" : "Login", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 300, 300, NULL, NULL, hInst, (LPVOID)isSignUp);
+    ShowWindow(hAuthWnd, SW_SHOW);
+    UpdateWindow(hAuthWnd);
+}
+
+// ฟังก์ชันจัดการหน้าต่าง Login/Sign Up
+LRESULT CALLBACK AuthWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    static bool isSignUp;
+
+    switch (msg) {
+    case WM_CREATE: {
+        CREATESTRUCT* pCreate = (CREATESTRUCT*)lParam;
+        isSignUp = (bool)pCreate->lpCreateParams;
+
+        // สร้างช่องกรอกข้อมูลและปุ่ม
+        CreateWindow("STATIC", "Username:", WS_VISIBLE | WS_CHILD, 20, 20, 80, 20, hwnd, NULL, NULL, NULL);
+        hUsername = CreateWindow("EDIT", "", WS_VISIBLE | WS_CHILD | WS_BORDER, 100, 20, 150, 20, hwnd, NULL, NULL, NULL);
+
+        CreateWindow("STATIC", "Password:", WS_VISIBLE | WS_CHILD, 20, 50, 80, 20, hwnd, NULL, NULL, NULL);
+        hPassword = CreateWindow("EDIT", "", WS_VISIBLE | WS_CHILD | WS_BORDER | ES_PASSWORD, 100, 50, 150, 20, hwnd, NULL, NULL, NULL);
+
+        if (isSignUp) {
+            CreateWindow("STATIC", "Confirm:", WS_VISIBLE | WS_CHILD, 20, 80, 80, 20, hwnd, NULL, NULL, NULL);
+            hConfirmPassword = CreateWindow("EDIT", "", WS_VISIBLE | WS_CHILD | WS_BORDER | ES_PASSWORD, 100, 80, 150, 20, hwnd, NULL, NULL, NULL);
+            CreateWindow("BUTTON", "Sign Up", WS_VISIBLE | WS_CHILD, 100, 120, 100, 30, hwnd, (HMENU)ID_SUBMIT_SIGNUP, NULL, NULL);
+        } else {
+            CreateWindow("BUTTON", "Login", WS_VISIBLE | WS_CHILD, 100, 90, 100, 30, hwnd, (HMENU)ID_SUBMIT_LOGIN, NULL, NULL);
+        }
+        break;
+    }
+    case WM_COMMAND:
+        if (LOWORD(wParam) == ID_SUBMIT_SIGNUP || LOWORD(wParam) == ID_SUBMIT_LOGIN) {
+            char username[100], password[100], confirmPassword[100] = "";
+            GetWindowText(hUsername, username, 100);
+            GetWindowText(hPassword, password, 100);
+            if (isSignUp) {
+                GetWindowText(hConfirmPassword, confirmPassword, 100);
+                if (strcmp(password, confirmPassword) != 0) {
+                    MessageBox(hwnd, "Passwords do not match!", "Error", MB_OK | MB_ICONERROR);
+                    return 0;
+                }
+                if (SaveUserData(username, password)) {
+                    MessageBox(hwnd, "Sign Up Successful!", "Success", MB_OK);
                     DestroyWindow(hwnd);
-                    break;
+                }
+            } else {
+                if (AuthenticateUser(username, password)) {
+                    MessageBox(hwnd, "Login Successful!", "Welcome", MB_OK);
+                    DestroyWindow(hwnd);
+                    ShowZoneSelectionWindow();  // แสดงหน้าต่างเลือก Zone หลังจาก Login สำเร็จ
+                } else {
+                    MessageBox(hwnd, "Invalid Username or Password", "Error", MB_OK | MB_ICONERROR);
+                }
             }
-            break;
-        case WM_DESTROY:
-            // ไม่ต้อง PostQuitMessage เพราะ Main Menu ยังรันอยู่
-            break;
-        default:
-            return DefWindowProc(hwnd, msg, wParam, lParam);
+        }
+        break;
+    case WM_DESTROY:
+        break;
+    default:
+        return DefWindowProc(hwnd, msg, wParam, lParam);
     }
     return 0;
 }
 
-void ShowZoneSelectWindow(HINSTANCE hInst, HWND parent)
-{
-    WNDCLASS wc = {0};
-    wc.lpfnWndProc   = ZoneSelectWndProc;
-    wc.hInstance     = hInst;
-    wc.lpszClassName = "ZoneSelectWindow";
-    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
-    RegisterClass(&wc);
-    
-    CreateWindow("ZoneSelectWindow", "Select a Zone", WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-                 CW_USEDEFAULT, CW_USEDEFAULT, 400, 300,
-                 parent, NULL, hInst, NULL);
+// ฟังก์ชันบันทึกข้อมูลผู้ใช้
+bool SaveUserData(const std::string& username, const std::string& password) {
+    std::ofstream file("users.txt", std::ios::app);
+    if (!file) return false;
+    file << username << " " << password << "\n";
+    file.close();
+    return true;
 }
 
-// ====== Zone 1 Window ======
-LRESULT CALLBACK Zone1WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    switch(msg)
-    {
-        case WM_CREATE:
-        {
-            HINSTANCE hInst = ((LPCREATESTRUCT)lParam)->hInstance;
-            HFONT hFont = CreateFont(18, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
-                                      DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS,
-                                      CLEARTYPE_QUALITY, VARIABLE_PITCH, TEXT("Arial"));
-            struct ButtonInfo { LPCSTR text; int id; } buttons[] = {
-                {"Booking History", ID_Z1_BTN_HISTORY},
-                {"Uniloft Chiangmai", ID_Z1_BTN_UNL},
-                {"Home & Hills", ID_Z1_BTN_HH},
-                {"Baan Im Rak", ID_Z1_BTN_BAN},
-                {"Sanguanmalee Mansion", ID_Z1_BTN_ML},
-                {"Kai Golden", ID_Z1_BTN_KG},
-                {"Home", ID_Z1_BTN_HOME},
-                {"Log Out", ID_Z1_BTN_LOGOUT}
-            };
-            for (int i = 0; i < 8; i++) {
-                HWND hBtn = CreateWindow("BUTTON", buttons[i].text, WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
-                                         0, 0, 0, 0, hwnd, (HMENU)buttons[i].id, hInst, NULL);
-                SendMessage(hBtn, WM_SETFONT, (WPARAM)hFont, TRUE);
-            }
+// ฟังก์ชันตรวจสอบข้อมูลผู้ใช้
+bool AuthenticateUser(const std::string& username, const std::string& password) {
+    std::ifstream file("users.txt");
+    std::string user, pass;
+    while (file >> user >> pass) {
+        if (user == username && pass == password) {
+            return true;
         }
+    }
+    return false;
+}
+
+// ฟังก์ชันแสดงหน้าต่างเลือก Zone
+void ShowZoneSelectionWindow() {
+    WNDCLASS wc = {};
+    wc.lpfnWndProc = ZoneSelectionWndProc;
+    wc.hInstance = hInst;
+    wc.lpszClassName = "ZoneSelectionWindow";
+    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+
+    if (!GetClassInfo(hInst, "ZoneSelectionWindow", &wc)) {
+        RegisterClass(&wc);
+    }
+
+    HWND hZoneSelectionWnd = CreateWindow("ZoneSelectionWindow", "Select Zone", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 300, 300, NULL, NULL, hInst, NULL);
+    ShowWindow(hZoneSelectionWnd, SW_SHOW);
+    UpdateWindow(hZoneSelectionWnd);
+}
+
+// ฟังก์ชันจัดการหน้าต่างเลือก Zone
+LRESULT CALLBACK ZoneSelectionWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    switch (msg) {
+    case WM_CREATE:
+        CreateWindow("BUTTON", "Zone 1", WS_VISIBLE | WS_CHILD, 50, 50, 200, 40, hwnd, (HMENU)301, NULL, NULL);
+        CreateWindow("BUTTON", "Zone 2", WS_VISIBLE | WS_CHILD, 50, 100, 200, 40, hwnd, (HMENU)302, NULL, NULL);
+        CreateWindow("BUTTON", "Zone 3", WS_VISIBLE | WS_CHILD, 50, 150, 200, 40, hwnd, (HMENU)303, NULL, NULL);
         break;
-        case WM_SIZE:
-        {
-            int width = LOWORD(lParam);
-            int height = HIWORD(lParam);
-            int buttonWidth = width / 6;
-            int buttonHeight = 50;
-            int yOffset = 10;
-            HWND btns[6] = {
-                GetDlgItem(hwnd, ID_Z1_BTN_HISTORY),
-                GetDlgItem(hwnd, ID_Z1_BTN_UNL),
-                GetDlgItem(hwnd, ID_Z1_BTN_HH),
-                GetDlgItem(hwnd, ID_Z1_BTN_BAN),
-                GetDlgItem(hwnd, ID_Z1_BTN_ML),
-                GetDlgItem(hwnd, ID_Z1_BTN_KG)
-            };
-            for (int i = 0; i < 6; i++) {
-                MoveWindow(btns[i], i * buttonWidth, yOffset, buttonWidth, buttonHeight, TRUE);
-            }
-            MoveWindow(GetDlgItem(hwnd, ID_Z1_BTN_HOME), 50, height - 70, 150, 50, TRUE);
-            MoveWindow(GetDlgItem(hwnd, ID_Z1_BTN_LOGOUT), width - 200, height - 70, 150, 50, TRUE);
-        }
-        break;
-        case WM_COMMAND:
-            switch(LOWORD(wParam))
-            {
-                case ID_Z1_BTN_UNL:
-                    MessageBox(hwnd, "Uniloft Chiangmai Information", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z1_BTN_HH:
-                    MessageBox(hwnd, "Home & Hills Information", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z1_BTN_BAN:
-                    MessageBox(hwnd, "Baan Im Rak Information", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z1_BTN_ML:
-                    MessageBox(hwnd, "Sanguanmalee Mansion Information", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z1_BTN_KG:
-                    MessageBox(hwnd, "Kai Golden Place Information", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z1_BTN_HISTORY:
-                    MessageBox(hwnd, "Booking History", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z1_BTN_HOME:
-                    MessageBox(hwnd, "Home", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z1_BTN_LOGOUT:
-                    MessageBox(hwnd, "Logging Out...", "Info", MB_OK | MB_ICONWARNING);
-                    DestroyWindow(hwnd);
-                    break;
-            }
-            break;
-        case WM_DESTROY:
+    case WM_COMMAND:
+        switch (LOWORD(wParam)) {
+        case 301:
+            ShowZoneWindow(1);  // แสดงหน้าต่าง Zone 1
             DestroyWindow(hwnd);
             break;
-        default:
-            return DefWindowProc(hwnd, msg, wParam, lParam);
-    }
-    return 0;
-}
-
-void ShowZone1Window(HINSTANCE hInst, HWND parent)
-{
-    WNDCLASS wc = {0};
-    wc.lpfnWndProc = Zone1WndProc;
-    wc.hInstance = hInst;
-    wc.lpszClassName = "Zone1Window";
-    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
-    RegisterClass(&wc);
-    CreateWindow("Zone1Window", "Zone 1", WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-                 CW_USEDEFAULT, CW_USEDEFAULT, 800, 600,
-                 parent, NULL, hInst, NULL);
-}
-
-// ====== Zone 2 Window ======
-LRESULT CALLBACK Zone2WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    switch(msg)
-    {
-        case WM_CREATE:
-        {
-            HINSTANCE hInst = ((LPCREATESTRUCT)lParam)->hInstance;
-            HFONT hFont = CreateFont(18, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
-                                      DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS,
-                                      CLEARTYPE_QUALITY, VARIABLE_PITCH, TEXT("Arial"));
-            struct ButtonInfo { LPCSTR text; int id; } buttons[] = {
-                {"Booking History", ID_Z2_BTN_HISTORY},
-                {"Phufa Place Apartment", ID_Z2_BTN_PP},
-                {"The Greenery Landmark", ID_Z2_BTN_GL},
-                {"Pojai Apartment", ID_Z2_BTN_PJ},
-                {"Kiang Doi Place", ID_Z2_BTN_KD},
-                {"Baan Pranee (Jed Yod)", ID_Z2_BTN_BAAN},
-                {"Home", ID_Z2_BTN_HOME},
-                {"Log Out", ID_Z2_BTN_LOGOUT}
-            };
-            for (int i = 0; i < 8; i++) {
-                HWND hBtn = CreateWindow("BUTTON", buttons[i].text, WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
-                                         0, 0, 0, 0, hwnd, (HMENU)buttons[i].id, hInst, NULL);
-                SendMessage(hBtn, WM_SETFONT, (WPARAM)hFont, TRUE);
-            }
-        }
-        break;
-        case WM_SIZE:
-        {
-            int width = LOWORD(lParam);
-            int height = HIWORD(lParam);
-            int buttonWidth = width / 6;
-            int buttonHeight = 50;
-            int yOffset = 10;
-            HWND btns[6] = {
-                GetDlgItem(hwnd, ID_Z2_BTN_HISTORY),
-                GetDlgItem(hwnd, ID_Z2_BTN_PP),
-                GetDlgItem(hwnd, ID_Z2_BTN_GL),
-                GetDlgItem(hwnd, ID_Z2_BTN_PJ),
-                GetDlgItem(hwnd, ID_Z2_BTN_KD),
-                GetDlgItem(hwnd, ID_Z2_BTN_BAAN)
-            };
-            for (int i = 0; i < 6; i++) {
-                MoveWindow(btns[i], i * buttonWidth, yOffset, buttonWidth, buttonHeight, TRUE);
-            }
-            MoveWindow(GetDlgItem(hwnd, ID_Z2_BTN_HOME), 50, height - 70, 150, 50, TRUE);
-            MoveWindow(GetDlgItem(hwnd, ID_Z2_BTN_LOGOUT), width - 200, height - 70, 150, 50, TRUE);
-        }
-        break;
-        case WM_COMMAND:
-            switch(LOWORD(wParam))
-            {
-                case ID_Z2_BTN_PP:
-                    MessageBox(hwnd, "Phufa Place Information", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z2_BTN_GL:
-                    MessageBox(hwnd, "The Greenery Landmark Information", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z2_BTN_PJ:
-                    MessageBox(hwnd, "Pojai Apartment Information", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z2_BTN_KD:
-                    MessageBox(hwnd, "Kiang Doi Place Information", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z2_BTN_BAAN:
-                    MessageBox(hwnd, "Baan Pranee (Jed Yod) Information", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z2_BTN_HISTORY:
-                    MessageBox(hwnd, "Booking History", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z2_BTN_HOME:
-                    MessageBox(hwnd, "Home", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z2_BTN_LOGOUT:
-                    MessageBox(hwnd, "Logging Out...", "Info", MB_OK | MB_ICONWARNING);
-                    DestroyWindow(hwnd);
-                    break;
-            }
-            break;
-        case WM_DESTROY:
+        case 302:
+            ShowZoneWindow(2);  // แสดงหน้าต่าง Zone 2
             DestroyWindow(hwnd);
             break;
-        default:
-            return DefWindowProc(hwnd, msg, wParam, lParam);
-    }
-    return 0;
-}
-
-void ShowZone2Window(HINSTANCE hInst, HWND parent)
-{
-    WNDCLASS wc = {0};
-    wc.lpfnWndProc = Zone2WndProc;
-    wc.hInstance = hInst;
-    wc.lpszClassName = "Zone2Window";
-    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
-    RegisterClass(&wc);
-    CreateWindow("Zone2Window", "Zone 2", WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-                 CW_USEDEFAULT, CW_USEDEFAULT, 800, 600,
-                 parent, NULL, hInst, NULL);
-}
-
-// ====== Zone 3 Window ======
-LRESULT CALLBACK Zone3WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    switch(msg)
-    {
-        case WM_CREATE:
-        {
-            HINSTANCE hInst = ((LPCREATESTRUCT)lParam)->hInstance;
-            HFONT hFont = CreateFont(18, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
-                                      DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS,
-                                      CLEARTYPE_QUALITY, VARIABLE_PITCH, TEXT("Arial"));
-            struct ButtonInfo { LPCSTR text; int id; } buttons[] = {
-                {"Booking History", ID_Z3_BTN_HISTORY},
-                {"Warisa Apartment", ID_Z3_BTN_WARISA},
-                {"P.S. Mansion", ID_Z3_BTN_PS},
-                {"Baan Tarnkam", ID_Z3_BTN_BAAAN},
-                {"Tarnthong Place", ID_Z3_BTN_TARNTHONG},
-                {"Thongtara Monte", ID_Z3_BTN_THONGTARA},
-                {"Home", ID_Z3_BTN_HOME},
-                {"Log Out", ID_Z3_BTN_LOGOUT}
-            };
-            for (int i = 0; i < 8; i++) {
-                HWND hBtn = CreateWindow("BUTTON", buttons[i].text, WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
-                                         0, 0, 0, 0, hwnd, (HMENU)buttons[i].id, hInst, NULL);
-                SendMessage(hBtn, WM_SETFONT, (WPARAM)hFont, TRUE);
-            }
-        }
-        break;
-        case WM_SIZE:
-        {
-            int width = LOWORD(lParam);
-            int height = HIWORD(lParam);
-            int buttonWidth = width / 6;
-            int buttonHeight = 50;
-            int yOffset = 10;
-            HWND btns[6] = {
-                GetDlgItem(hwnd, ID_Z3_BTN_HISTORY),
-                GetDlgItem(hwnd, ID_Z3_BTN_WARISA),
-                GetDlgItem(hwnd, ID_Z3_BTN_PS),
-                GetDlgItem(hwnd, ID_Z3_BTN_BAAAN),
-                GetDlgItem(hwnd, ID_Z3_BTN_TARNTHONG),
-                GetDlgItem(hwnd, ID_Z3_BTN_THONGTARA)
-            };
-            for (int i = 0; i < 6; i++) {
-                MoveWindow(btns[i], i * buttonWidth, yOffset, buttonWidth, buttonHeight, TRUE);
-            }
-            MoveWindow(GetDlgItem(hwnd, ID_Z3_BTN_HOME), 50, height - 70, 150, 50, TRUE);
-            MoveWindow(GetDlgItem(hwnd, ID_Z3_BTN_LOGOUT), width - 200, height - 70, 150, 50, TRUE);
-        }
-        break;
-        case WM_COMMAND:
-            switch(LOWORD(wParam))
-            {
-                case ID_Z3_BTN_WARISA:
-                    MessageBox(hwnd, "Warisa Apartment Information", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z3_BTN_PS:
-                    MessageBox(hwnd, "P.S. Mansion Information", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z3_BTN_BAAAN:
-                    MessageBox(hwnd, "Baan Tarnkam Information", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z3_BTN_TARNTHONG:
-                    MessageBox(hwnd, "Tarnthong Place Apartment Information", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z3_BTN_THONGTARA:
-                    MessageBox(hwnd, "Thongtara Monte Information", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z3_BTN_HISTORY:
-                    MessageBox(hwnd, "Booking History", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z3_BTN_HOME:
-                    MessageBox(hwnd, "Home", "Info", MB_OK | MB_ICONINFORMATION);
-                    break;
-                case ID_Z3_BTN_LOGOUT:
-                    MessageBox(hwnd, "Logging Out...", "Info", MB_OK | MB_ICONWARNING);
-                    DestroyWindow(hwnd);
-                    break;
-            }
-            break;
-        case WM_DESTROY:
+        case 303:
+            ShowZoneWindow(3);  // แสดงหน้าต่าง Zone 3
             DestroyWindow(hwnd);
             break;
-        default:
-            return DefWindowProc(hwnd, msg, wParam, lParam);
+        }
+        break;
+    case WM_DESTROY:
+        break;
+    default:
+        return DefWindowProc(hwnd, msg, wParam, lParam);
     }
     return 0;
 }
 
-void ShowZone3Window(HINSTANCE hInst, HWND parent)
-{
-    WNDCLASS wc = {0};
-    wc.lpfnWndProc = Zone3WndProc;
+// ฟังก์ชันแสดงหน้าต่าง Zone
+void ShowZoneWindow(int zoneNumber) {
+    WNDCLASS wc = {};
+    wc.lpfnWndProc = (zoneNumber == 1) ? Zone1WndProc : (zoneNumber == 2) ? Zone2WndProc : Zone3WndProc;
     wc.hInstance = hInst;
-    wc.lpszClassName = "Zone3Window";
-    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
-    RegisterClass(&wc);
-    CreateWindow("Zone3Window", "Zone 3", WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-                 CW_USEDEFAULT, CW_USEDEFAULT, 800, 600,
-                 parent, NULL, hInst, NULL);
+    wc.lpszClassName = (zoneNumber == 1) ? "Zone1Window" : (zoneNumber == 2) ? "Zone2Window" : "Zone3Window";
+    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+
+    if (!GetClassInfo(hInst, wc.lpszClassName, &wc)) {
+        RegisterClass(&wc);
+    }
+
+    HWND hZoneWnd = CreateWindow(wc.lpszClassName, (zoneNumber == 1) ? "Zone 1" : (zoneNumber == 2) ? "Zone 2" : "Zone 3", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 400, 300, NULL, NULL, hInst, NULL);
+    ShowWindow(hZoneWnd, SW_SHOW);
+    UpdateWindow(hZoneWnd);
+}
+
+// ฟังก์ชันจัดการหน้าต่าง Zone 1
+LRESULT CALLBACK Zone1WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    switch (msg) {
+    case WM_CREATE:
+        CreateWindow("BUTTON", "1. Unilof", WS_VISIBLE | WS_CHILD, 50, 50, 150, 40, hwnd, (HMENU)401, NULL, NULL);
+        CreateWindow("BUTTON", "2. Home Hill", WS_VISIBLE | WS_CHILD, 50, 100, 150, 40, hwnd, (HMENU)402, NULL, NULL);
+        CreateWindow("BUTTON", "3. Baan Im Rak", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)403, NULL, NULL);
+        CreateWindow("BUTTON", "4. Sang", WS_VISIBLE | WS_CHILD, 50, 200, 150, 40, hwnd, (HMENU)404, NULL, NULL);
+        CreateWindow("BUTTON", "5. Kai Golden", WS_VISIBLE | WS_CHILD, 50, 250, 150, 40, hwnd, (HMENU)405, NULL, NULL);
+        CreateWindow("BUTTON", "Back", WS_VISIBLE | WS_CHILD, 50, 300, 150, 40, hwnd, (HMENU)306, NULL, NULL);
+        break;
+    case WM_COMMAND:
+        switch (LOWORD(wParam)) {
+        case 401:
+            MessageBox(hwnd, "You selected Unilof", "Zone 1", MB_OK);
+            break;
+        case 402:
+            MessageBox(hwnd, "You selected Home Hill", "Zone 1", MB_OK);
+            break;
+        case 403:
+            MessageBox(hwnd, "You selected Baan Im Rak", "Zone 1", MB_OK);
+            break;
+        case 404:
+            MessageBox(hwnd, "You selected Sang", "Zone 1", MB_OK);
+            break;
+        case 405:
+            MessageBox(hwnd, "You selected Kai Golden", "Zone 1", MB_OK);
+            break;
+        case 306:  // ปุ่ม Back
+            DestroyWindow(hwnd);  // ปิดหน้าต่าง Zone ปัจจุบัน
+            ShowZoneSelectionWindow();  // แสดงหน้าต่างเลือก Zone ใหม่
+        break;
+        }
+        break;
+    case WM_DESTROY:
+        break;
+    default:
+        return DefWindowProc(hwnd, msg, wParam, lParam);
+    }
+    return 0;
+}
+
+// ฟังก์ชันจัดการหน้าต่าง Zone 2
+LRESULT CALLBACK Zone2WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    switch (msg) {
+    case WM_CREATE:
+        CreateWindow("BUTTON", "1. Place A", WS_VISIBLE | WS_CHILD, 50, 50, 150, 40, hwnd, (HMENU)501, NULL, NULL);
+        CreateWindow("BUTTON", "2. Place B", WS_VISIBLE | WS_CHILD, 50, 100, 150, 40, hwnd, (HMENU)502, NULL, NULL);
+        CreateWindow("BUTTON", "3. Place C", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)503, NULL, NULL);
+        CreateWindow("BUTTON", "4. Place D", WS_VISIBLE | WS_CHILD, 50, 200, 150, 40, hwnd, (HMENU)504, NULL, NULL);
+        CreateWindow("BUTTON", "5. Place E", WS_VISIBLE | WS_CHILD, 50, 250, 150, 40, hwnd, (HMENU)405, NULL, NULL);
+        CreateWindow("BUTTON", "Back", WS_VISIBLE | WS_CHILD, 50, 300, 150, 40, hwnd, (HMENU)506, NULL, NULL);
+        break;
+    case WM_COMMAND:
+        switch (LOWORD(wParam)) {
+        case 501:
+            MessageBox(hwnd, "You selected Place A", "Zone 2", MB_OK);
+            break;
+        case 502:
+            MessageBox(hwnd, "You selected Place B", "Zone 2", MB_OK);
+            break;
+        case 503:
+            MessageBox(hwnd, "You selected Place C", "Zone 2", MB_OK);
+            break;
+        case 504:
+            MessageBox(hwnd, "You selected Place D", "Zone 2", MB_OK);
+            break;
+        case 505:
+            MessageBox(hwnd, "You selected Place E", "Zone 2", MB_OK);
+            break;
+        case 506:  // ปุ่ม Back
+            DestroyWindow(hwnd);  // ปิดหน้าต่าง Zone ปัจจุบัน
+            ShowZoneSelectionWindow();  // แสดงหน้าต่างเลือก Zone ใหม่
+        break;
+        }
+        break;
+    case WM_DESTROY:
+        break;
+    default:
+        return DefWindowProc(hwnd, msg, wParam, lParam);
+    }
+    return 0;
+}
+
+// ฟังก์ชันจัดการหน้าต่าง Zone 3
+LRESULT CALLBACK Zone3WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    switch (msg) {
+    case WM_CREATE:
+        CreateWindow("BUTTON", "1. Spot X", WS_VISIBLE | WS_CHILD, 50, 50, 150, 40, hwnd, (HMENU)501, NULL, NULL);
+        CreateWindow("BUTTON", "2. Spot Y", WS_VISIBLE | WS_CHILD, 50, 100, 150, 40, hwnd, (HMENU)502, NULL, NULL);
+        CreateWindow("BUTTON", "3. Spot Z", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)503, NULL, NULL);
+        CreateWindow("BUTTON", "4. Spot W", WS_VISIBLE | WS_CHILD, 50, 200, 150, 40, hwnd, (HMENU)504, NULL, NULL);
+        CreateWindow("BUTTON", "5. Spot V", WS_VISIBLE | WS_CHILD, 50, 250, 150, 40, hwnd, (HMENU)505, NULL, NULL);
+        CreateWindow("BUTTON", "Back", WS_VISIBLE | WS_CHILD, 50, 300, 150, 40, hwnd, (HMENU)606, NULL, NULL);
+        break;
+    case WM_COMMAND:
+        switch (LOWORD(wParam)) {
+        case 601:
+            MessageBox(hwnd, "You selected Spot X", "Zone 3", MB_OK);
+            break;
+        case 602:
+            MessageBox(hwnd, "You selected Spot G", "Zone 3", MB_OK);
+            break;
+        case 603:
+            MessageBox(hwnd, "You selected Spot H", "Zone 3", MB_OK);
+            break;
+        case 604:
+            MessageBox(hwnd, "You selected Spot I", "Zone 3", MB_OK);
+            break;
+        case 605:
+            MessageBox(hwnd, "You selected Spot J", "Zone 3", MB_OK);
+            break;
+        case 606:  // ปุ่ม Back
+            DestroyWindow(hwnd);  // ปิดหน้าต่าง Zone ปัจจุบัน
+            ShowZoneSelectionWindow();  // แสดงหน้าต่างเลือก Zone ใหม่
+        break;
+        }
+        break;
+    case WM_DESTROY:
+        break;
+    default:
+        return DefWindowProc(hwnd, msg, wParam, lParam);
+    }
+    return 0;
 }
