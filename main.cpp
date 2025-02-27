@@ -179,12 +179,27 @@ LRESULT CALLBACK AuthWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 
 // ฟังก์ชันบันทึกข้อมูลผู้ใช้
 bool SaveUserData(const std::string& username, const std::string& password) {
-    std::ofstream file("users.txt", std::ios::app);
-    if (!file) return false;
-    file << username << " " << password << "\n";
-    file.close();
+    std::ifstream inFile("users.txt");
+    std::string user, pass;
+
+    // ตรวจสอบว่า username มีอยู่แล้วหรือไม่
+    while (inFile >> user >> pass) {
+        if (user == username) {
+            MessageBox(NULL, "Username already exists! Please choose another.", "Error", MB_OK | MB_ICONERROR);
+            return false;  // หยุดการบันทึก
+        }
+    }
+    inFile.close();
+
+    // บันทึกข้อมูลถ้าไม่มี username ซ้ำ
+    std::ofstream outFile("users.txt", std::ios::app);
+    if (!outFile) return false;
+    outFile << username << " " << password << "\n";
+    outFile.close();
+
     return true;
 }
+
 
 // ฟังก์ชันตรวจสอบข้อมูลผู้ใช้
 bool AuthenticateUser(const std::string& username, const std::string& password) {
