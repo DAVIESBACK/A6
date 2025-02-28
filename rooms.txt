@@ -1,0 +1,42 @@
+Baan Im Rak
+Rak Street 67
+4000 bath 5
+Baan Pranee (Jed Yod)
+Jed Yod 99
+4600 bath 5
+Baan Tarnkam
+Tarnkam Road 78
+4200 bath 5
+Home Hills
+Hillside Road 45
+4500 bath 0
+Kai Golden Place
+Golden Road 101
+6000 bath 4
+Kiang Doi Place
+Doi Street 76
+4700 bath 5
+Phufa Place
+Phufa Lane 21
+4800 bath 5
+Pojai Apartment
+Pojai Road 32
+4300 bath 5
+Sanguanmalee Mansion
+Sanguan Road 89
+5500 bath 5
+Tarnthong Place Apartment Chiangmai
+Tarnthong Road 90
+5100 bath 5
+The Greenery Landmark
+Green Street 55
+5200 bath 5
+Thongtara Monte
+Monte Street 109
+5700 bath 5
+Uniloft Chiangmai
+Chiangmai Road 123
+5000 bath 0
+Warisa Apartment
+Warisa Road 12
+4900 bath 5

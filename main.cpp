@@ -1,6 +1,8 @@
 #include <windows.h>
 #include <fstream>
 #include <string>
+#include <vector>
+#include <map>
 
 // ฟังก์ชันและตัวแปรที่จำเป็น
 LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
@@ -30,6 +32,42 @@ bool AuthenticateUser(const std::string& username, const std::string& password);
 void ShowZoneSelectionWindow();
 // ฟังก์ชันแสดงหน้าต่าง Zone
 void ShowZoneWindow(int zoneNumber);
+void ShowBookingInfo(HWND hwnd, const std::string& roomName);
+void saveBooking(std::string user, std::string dormName);
+
+std::string loadCurrentUser();
+void viewBookings(HWND hwnd);
+
+std::string loadCurrentUser() {
+    std::ifstream file("users.txt");
+    std::string User;
+
+    if (!file) return ""; // ถ้าไฟล์ไม่มี ให้ return ค่าว่าง
+
+    std::getline(file, User);
+    return User;
+}
+
+std::map<std::string, int> roomAvailability = {
+    {"Uniloft Chiangmai\r\nChiangmai Road 123\r\n5000 bath", 5},
+    {"Home Hills\r\nHillside Road 45\r\n4500 bath", 5},
+    {"Baan Im Rak\r\nRak Street 67\r\n4000 bath", 5},
+    {"Sanguanmalee Mansion\r\nSanguan Road 89\r\n5500 bath", 5},
+    {"Kai Golden Place\r\nGolden Road 101\r\n6000 bath", 5},
+
+    {"Phufa Place\r\nPhufa Lane 21\r\n4800 bath", 5},
+    {"The Greenery Landmark\r\nGreen Street 55\r\n5200 bath", 5},
+    {"Pojai Apartment\r\nPojai Road 32\r\n4300 bath", 5},
+    {"Kiang Doi Place\r\nDoi Street 76\r\n4700 bath", 5},
+    {"Baan Pranee (Jed Yod)\r\nJed Yod 99\r\n4600 bath", 5},
+
+    {"Warisa Apartment\r\nWarisa Road 12\r\n4900 bath", 5},
+    {"Warisa Apartment\r\nWarisa Road 12\r\n4900 bath", 5},
+    {"Baan Tarnkam\r\nTarnkam Road 78\r\n4200 bath", 5},
+    {"Tarnthong Place Apartment Chiangmai\r\nTarnthong Road 90\r\n5100 bath", 5},
+    {"Thongtara Monte\r\nMonte Street 109\r\n5700 bath", 5}
+
+};
 
 // ฟังก์ชันหลัก
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
@@ -242,6 +280,7 @@ LRESULT CALLBACK ZoneSelectionWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM
         CreateWindow("BUTTON", "Zone 1", WS_VISIBLE | WS_CHILD, 50, 50, 200, 40, hwnd, (HMENU)301, NULL, NULL);
         CreateWindow("BUTTON", "Zone 2", WS_VISIBLE | WS_CHILD, 50, 100, 200, 40, hwnd, (HMENU)302, NULL, NULL);
         CreateWindow("BUTTON", "Zone 3", WS_VISIBLE | WS_CHILD, 50, 150, 200, 40, hwnd, (HMENU)303, NULL, NULL);
+        CreateWindow("BUTTON", "veiwbook", WS_VISIBLE | WS_CHILD, 50, 200, 200, 40, hwnd, (HMENU)304, NULL, NULL);
         break;
     case WM_COMMAND:
         switch (LOWORD(wParam)) {
@@ -257,6 +296,9 @@ LRESULT CALLBACK ZoneSelectionWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM
             ShowZoneWindow(3);  // แสดงหน้าต่าง Zone 3
             DestroyWindow(hwnd);
             break;
+        case 304:
+            viewBookings(hwnd);
+            DestroyWindow(hwnd);
         }
         break;
     case WM_DESTROY:
@@ -299,19 +341,19 @@ LRESULT CALLBACK Zone1WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_COMMAND:
         switch (LOWORD(wParam)) {
         case 401:
-            MessageBox(hwnd, "You selected Unilof", "Zone 1", MB_OK);
+            saveBooking(loadCurrentUser(),"Uniloft Chiangmai\r\nChiangmai Road 123\r\n5000 bath");
             break;
         case 402:
-            MessageBox(hwnd, "You selected Home Hill", "Zone 1", MB_OK);
+            saveBooking(loadCurrentUser(),"Home Hills\r\nHillside Road 45\r\n4500 bath");
             break;
         case 403:
-            MessageBox(hwnd, "You selected Baan Im Rak", "Zone 1", MB_OK);
+            saveBooking(loadCurrentUser(),"Baan Im Rak\r\nRak Street 67\r\n4000 bath");
             break;
         case 404:
-            MessageBox(hwnd, "You selected Sang", "Zone 1", MB_OK);
+             saveBooking(loadCurrentUser(),"Sanguanmalee Mansion\r\nSanguan Road 89\r\n5500 bath");
             break;
         case 405:
-            MessageBox(hwnd, "You selected Kai Golden", "Zone 1", MB_OK);
+             saveBooking(loadCurrentUser(),"Kai Golden Place\r\nGolden Road 101\r\n6000 bath");
             break;
         case 306:  // ปุ่ม Back
             DestroyWindow(hwnd);  // ปิดหน้าต่าง Zone ปัจจุบัน
@@ -341,19 +383,19 @@ LRESULT CALLBACK Zone2WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_COMMAND:
         switch (LOWORD(wParam)) {
         case 501:
-            MessageBox(hwnd, "You selected Phufa Place Information", "Zone 2", MB_OK);
+            saveBooking(loadCurrentUser(),"Phufa Place\r\nPhufa Lane 21\r\n4800 bath");
             break;
         case 502:
-            MessageBox(hwnd, "You selected The Greenery Landmark Information", "Zone 2", MB_OK);
+             saveBooking(loadCurrentUser(),"The Greenery Landmark\r\nGreen Street 55\r\n5200 bath");
             break;
         case 503:
-            MessageBox(hwnd, "You selected Pojai Apartment Information", "Zone 2", MB_OK);
+             saveBooking(loadCurrentUser(),"Pojai Apartment\r\nPojai Road 32\r\n4300 bath");
             break;
         case 504:
-            MessageBox(hwnd, "You selected Kiang Doi Place Information", "Zone 2", MB_OK);
+             saveBooking(loadCurrentUser(),"Kiang Doi Place\r\nDoi Street 76\r\n4700 bath");
             break;
         case 505:
-            MessageBox(hwnd, "You selected Baan Pranee (Jed Yod) Information", "Zone 2", MB_OK);
+             saveBooking(loadCurrentUser(),"Baan Pranee (Jed Yod)\r\nJed Yod 99\r\n4600 bath");
             break;
         case 506:  // ปุ่ม Back
             DestroyWindow(hwnd);  // ปิดหน้าต่าง Zone ปัจจุบัน
@@ -383,19 +425,19 @@ LRESULT CALLBACK Zone3WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_COMMAND:
         switch (LOWORD(wParam)) {
         case 601:
-            MessageBox(hwnd, "Warisa ApartmentWarisa Road 124900 1","Zone 3", MB_OK);
+             saveBooking(loadCurrentUser(),"Warisa Apartment\r\nWarisa Road 12\r\n4900 bath");
             break;
         case 602:
-            MessageBox(hwnd, "P.S. Mansion PS Street 34 5300 1", "Zone 3", MB_OK);
+             saveBooking(loadCurrentUser(),"Warisa Apartment\r\nWarisa Road 12\r\n4900 bath");
             break;
         case 603:
-            MessageBox(hwnd, "You selected Baan Tarnkam Information", "Zone 3", MB_OK);
+             saveBooking(loadCurrentUser(),"Baan Tarnkam\r\nTarnkam Road 78\r\n4200 bath");
             break;
         case 604:
-            MessageBox(hwnd, "You selected Tarnthong Place Apartment Information", "Zone 3", MB_OK);
+             saveBooking(loadCurrentUser(),"Tarnthong Place Apartment Chiangmai\r\nTarnthong Road 90\r\n5100 bath");
             break;
         case 605:
-            MessageBox(hwnd, "You selected Thongtara Monte Information", "Zone 3", MB_OK);
+             saveBooking(loadCurrentUser(),"Thongtara Monte\r\nMonte Street 109\r\n5700 bath");
             break;
         case 606:  // ปุ่ม Back
             DestroyWindow(hwnd);  // ปิดหน้าต่าง Zone ปัจจุบัน
@@ -409,4 +451,88 @@ LRESULT CALLBACK Zone3WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         return DefWindowProc(hwnd, msg, wParam, lParam);
     }
     return 0;
+}
+
+void ShowBookingInfo(HWND hwnd, const std::string& roomName) {
+    std::ifstream file("booking_history.txt");
+    std::string history, line;
+    
+    if (file.is_open()) {
+        while (std::getline(file, line)) {
+            if (line.find(roomName) != std::string::npos) {
+                history += line + "\n";
+            }
+        }
+        file.close();
+    }
+
+    if (history.empty()) {
+        history = "No booking history.";
+    }
+
+    std::string message = "Information about " + roomName + "\n\nBooking History:\n" + history;
+    MessageBox(hwnd, message.c_str(), "Room Information", MB_OK);
+}
+
+void saveBooking(std::string user, std::string dormName) {
+    // โหลดข้อมูลจำนวนห้องที่เหลือจากไฟล์ (ถ้ามี)
+    std::ifstream inFile("rooms.txt");
+    if (inFile) {
+        std::string name;
+        int count;
+        while (inFile >> name >> count) {
+            roomAvailability[name] = count;
+        }
+    }
+    inFile.close();
+
+    // เช็คว่าห้องเต็มหรือยัง
+    if (roomAvailability[dormName] == 0) {
+        MessageBox(NULL, "This dorm is full!", "Booking Failed", MB_OK);
+        return;
+    }
+
+    // ลดจำนวนห้องลง 1
+    roomAvailability[dormName]--;
+
+    // บันทึกลงไฟล์ bookings.txt
+    std::ofstream file("bookings.txt", std::ios::app);
+    file << user << " booked " << dormName << std::endl;
+    file.close();
+
+    // อัปเดตไฟล์ rooms.txt เพื่อบันทึกจำนวนห้องที่เหลือ
+    std::ofstream outFile("rooms.txt");
+    for (const auto& pair : roomAvailability) {
+        outFile << pair.first << " " << pair.second << std::endl;
+    }
+    outFile.close();
+
+    // แสดงข้อความยืนยัน
+    std::string msg = "You booked " + dormName + "\nRooms left: " + std::to_string(roomAvailability[dormName]);
+    MessageBox(NULL, msg.c_str(), "Booking Confirmed", MB_OK);
+}
+
+
+void viewBookings(HWND hwnd) {
+    std::ifstream file("bookings.txt");
+    std::string user = loadCurrentUser(); // โหลดผู้ใช้ปัจจุบัน
+    std::string history, line;
+
+    if (!file) {
+        MessageBox(hwnd, "Error opening file!", "Error", MB_OK | MB_ICONERROR);
+        return;
+    }
+
+    while (std::getline(file, line)) {
+        if (line.find(user) != std::string::npos) {
+            history += line + "\n";
+        }
+    }
+    file.close();
+
+    if (history.empty()) {
+        history = "No booking history found.";
+    }
+
+    MessageBox(hwnd, history.c_str(), "Booking History", MB_OK);
 }
