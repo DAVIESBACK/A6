@@ -38,6 +38,7 @@ HWND hUsername, hPassword, hConfirmPassword;
 #define ID_EXIT_BUTTON 203
 #define ID_SUBMIT_LOGIN 204
 #define ID_SUBMIT_SIGNUP 205
+#define ID_CANCEL_BOOKING 704
 
 // ฟังก์ชันหลัก
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow);
@@ -50,6 +51,7 @@ LRESULT CALLBACK PlaceWndProc(HWND, UINT, WPARAM, LPARAM);
 void ShowAuthWindow(bool isSignUp);
 bool SaveUserData(const std::string& username, const std::string& password);
 bool AuthenticateUser(const std::string& username, const std::string& password);
+bool CancelBooking(HWND hwnd, const std::string& place, const std::string& username);
 void ShowZoneSelectionWindow(const std::string& username); // เพิ่มพารามิเตอร์
 void ShowZoneWindow(int zoneNumber, const std::string& username); // เพิ่มพารามิเตอร์ username
 void ShowPlaceWindow(std::pair<std::string, std::string>* params); // เปลี่ยนพารามิเตอร์
@@ -461,11 +463,12 @@ LRESULT CALLBACK PlaceWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             // ปรับตำแหน่งปุ่มและข้อความสถานะให้อยู่ด้านล่าง
             CreateWindow("BUTTON", "Book", WS_VISIBLE | WS_CHILD, 50, 140, 150, 40, hwnd, (HMENU)701, NULL, NULL);
             CreateWindow("BUTTON", "Check Status", WS_VISIBLE | WS_CHILD, 50, 190, 150, 40, hwnd, (HMENU)702, NULL, NULL);
-            CreateWindow("BUTTON", "Back", WS_VISIBLE | WS_CHILD, 50, 240, 150, 40, hwnd, (HMENU)703, NULL, NULL);
+            CreateWindow("BUTTON", "Cancel Booking", WS_VISIBLE | WS_CHILD, 50, 240, 150, 40, hwnd, (HMENU)704, NULL, NULL);
+            CreateWindow("BUTTON", "Back", WS_VISIBLE | WS_CHILD, 50, 290, 150, 40, hwnd, (HMENU)703, NULL, NULL);
 
             hStatusText = CreateWindow("STATIC", GetBookingStatus(placeName).c_str(), 
             WS_VISIBLE | WS_CHILD | SS_CENTER, 
-            50, 290, 250, 60, hwnd, NULL, NULL, NULL);
+            50, 340, 250, 60, hwnd, NULL, NULL, NULL);
             break;
         }
         case WM_COMMAND: {
@@ -487,6 +490,12 @@ LRESULT CALLBACK PlaceWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 case 703: // Back
                     ShowZoneSelectionWindow(currentUser);
                     DestroyWindow(hwnd);
+                    break;
+                case 704: // Cancel Booking
+                    if (CancelBooking(hwnd, placeName, currentUser)) {
+                        MessageBox(hwnd, "Booking canceled!", "Success", MB_OK);
+                        SetWindowText(hStatusText, GetBookingStatus(placeName).c_str());
+                    }
                     break;
             }
             break;
@@ -583,4 +592,17 @@ std::string GetBookingStatus(const std::string& place) {
     }
 
     return oss.str();
+}
+bool CancelBooking(HWND hwnd, const std::string& place, const std::string& username) {
+    auto range = bookings.equal_range(place);
+    for (auto it = range.first; it != range.second; ++it) {
+        if (it->second == username) {
+            bookings.erase(it);
+            roomAvailability[place]++;
+            SaveBookingsToFile();
+            return true;
+        }
+    }
+    MessageBox(hwnd, "You have not booked this place.", "Error", MB_OK | MB_ICONERROR);
+    return false;
 }
