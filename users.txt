@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+q qqqqqqqq
+w wwwwwwww
+=======
 qwer qwerqwer
 purgatory purgatory
-q q
+c c
+>>>>>>> 81ef3717e6d1c8ce56bac8588f42d43f3afec4b2
