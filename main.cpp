@@ -6,27 +6,16 @@
 #include <vector>   // สำหรับ std::vector
 
 std::map<std::string, std::string> placeDescriptions = {
-    {"Unilof", "Location: 147 Ban Mai Behind Mo1 Suthep Subdistrict Mueang Chiang Mai District Chiang Mai 50200\nInformation\n5000 baht/month\nPhone : 053-328-181\tRating 5/5"},
-    {"Home Hill", "Location: 143 Soi 7 Suthep Road Suthep Muang Chiang Mai 50200\nInformation\n4500 baht/month\nPhone : 0947402458\nRating 4/5"},
-    {"Baan Im Rak", "Location: Ban Mai Road behind Mo Suthep Subdistrict Mueang Chiang Mai District 50200\nInformation\n4000 baht/month\nPhone : 053-328-421\nRating 4/5"},
-    {"Sang","Location 145 Moo 14 Soi Suthep 7 Chiang Mai 50200\nInformation\n5500 baht/month\nPhone: 0953468524\nRating 5/5"},
-    {"Kai Golden","Location: 192/1 Moo 14 Suthep Subdistrict Mueang District Chiang Mai Thailand\nInformation\n6000 baht/month\nPhone : 082 556 5353\nRating 5/5"},
-    {"Phufa Place","Location: 177/1 Moo 1 Khan Klong Chonlaprathan Road Chang Phueak Subdistrict Chiang Mai Municipality Chiang Mai Province 50300\nInformation\n4800 baht/month\nPhone: 084 611 1154\tRating 4/5"},
-    {"The Greenery Landmark","Location: 99/2 M.2 T.Chang Phuek Amphoe Muang Chiang Mai Thailand Chiang Mai\nInformation\n5200 baht/month\nPhone: 083 567 7117\nRating 5/5"},
-    {"Porjai Apartment","Location: Chang Khian-Ched Yot Road Chang Phueak Subdistrict Mueang Chiang Mai District 50300\nInformation\n4300 baht/month\nPhone : 084-357-6079\tRating 4/5"},
-    {"Kiang Doi Place","Location: 176 Moo 1 Chang Phueak Mueang Chiang Mai District 50300\nInformation\n4700 baht/month\nPhone: 053-400-402\nRating 4/5"},
-    {"Baan Pranee(JedYod)","Location: JedYod Chang Khian Road Chang Phueak Mueang Chiang Mai Chiang Mai\nInformation\n4600 baht/month\nPhone : 0812888585\nRating 4/5"},
-    {"Warisa Apartment","Location: 60 Khunklong Chonprathan Rd Tambon Su Thep Amphoe Mueang Chiang Mai Chang Wat Chiang Mai 50200 Chiang Mai Thailand Chiang Mai\nInformation\n4900 baht/month\nPhone : 0847431149\tRating 5/5"},
-    {"P.S Mansion","Location: 689/1-5 Chang Phueak Muang Chiang Mai 50300\nInformation\n5300 baht/month\nPhone : 098-9565639\nRating 4/5"},
-    {"Baan Tarnkam","Location: 456 Chiang Mai-Hang Dong Road  Mueang Chiang Mai District Chiang Mai\nInformation\n4200 baht/month\nPhone : 053-461-351\nRating 4/5"},
-    {"Tarnthong Place Apartment","Location: 188/8 Village No.10 Mueang Chiang Mai District Chiang Mai 50200\nInformation\n5100 baht/month\nPhone : 098-824-2223\nRating 5/5"},
-    {"Thongtara Monte","Location: Suthep Rd. Soi 2 Suthep Mueang Chiang Mai Chiang Mai\nInformation\n5700 baht/month\nPhone : 062-845-4665\nRating 4/5"}
+    {"Unilof", "Uniloft Chiangmai\nLocation:147 VillageNo. 14 Soi Ban Mai Behind Mo1 Suthep Subdistrict"},
+    {"Home Hill", "Home Hill \n:\n-\n- "},
+    {"Baan Im Rak", "Baan Im Rak "},
+    // ...
 };
 std::multimap<std::string, std::string> bookings;
 std::map<std::string, int> roomAvailability = {
     {"Unilof",5}, {"Home Hill",6}, {"Baan Im Rak",7}, {"Sang",8}, {"Kai Golden",2},
-    {"Phufa Place",3}, {"The Greenery Landmark",2}, {"Porjai Apartment",1}, {"Kiang Doi Place",5}, {"Baan Pranee(JedYod)",8},
-    {"Warisa Apartment",5}, {"P.S Mansion",2}, {"Baan Tarnkam",3}, {"Tarnthong Place Apartment",6}, {"Thongtara Monte",4}
+    {"Place A",3}, {"Place B",2}, {"Place C",1}, {"Place D",5}, {"Place E",8},
+    {"Spot X",5}, {"Spot Y",2}, {"Spot Z",3}, {"Spot W",6}, {"Spot V",4}
 };
 
 HINSTANCE hInst;
@@ -38,7 +27,6 @@ HWND hUsername, hPassword, hConfirmPassword;
 #define ID_EXIT_BUTTON 203
 #define ID_SUBMIT_LOGIN 204
 #define ID_SUBMIT_SIGNUP 205
-#define ID_CANCEL_BOOKING 704
 
 // ฟังก์ชันหลัก
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow);
@@ -51,10 +39,10 @@ LRESULT CALLBACK PlaceWndProc(HWND, UINT, WPARAM, LPARAM);
 void ShowAuthWindow(bool isSignUp);
 bool SaveUserData(const std::string& username, const std::string& password);
 bool AuthenticateUser(const std::string& username, const std::string& password);
-bool CancelBooking(HWND hwnd, const std::string& place, const std::string& username);
 void ShowZoneSelectionWindow(const std::string& username); // เพิ่มพารามิเตอร์
 void ShowZoneWindow(int zoneNumber, const std::string& username); // เพิ่มพารามิเตอร์ username
 void ShowPlaceWindow(std::pair<std::string, std::string>* params); // เปลี่ยนพารามิเตอร์
+bool WINLNWSUS(HWND hwnd, const std::string& place, const std::string& username);
 
 bool HasUserBooked(const std::string& username);
 bool BookPlace(HWND hwnd, const std::string& place, const std::string& username);
@@ -364,18 +352,18 @@ LRESULT CALLBACK ZoneWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
             CreateWindow("BUTTON", "4. Sang", WS_VISIBLE | WS_CHILD, 50, 200, 150, 40, hwnd, (HMENU)404, NULL, NULL);
             CreateWindow("BUTTON", "5. Kai Golden", WS_VISIBLE | WS_CHILD, 50, 250, 150, 40, hwnd, (HMENU)405, NULL, NULL);
         } else if (zoneNumber == 2) {
-            CreateWindow("BUTTON", "1. Phufa Place", WS_VISIBLE | WS_CHILD, 50, 50, 150, 40, hwnd, (HMENU)501, NULL, NULL);
-            CreateWindow("BUTTON", "2. The Greenery Landmark", WS_VISIBLE | WS_CHILD, 50, 100, 150, 40, hwnd, (HMENU)502, NULL, NULL);
-            CreateWindow("BUTTON", "3. Porjai Apartment", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)503, NULL, NULL);
-            CreateWindow("BUTTON", "4. Kiang Doi Place", WS_VISIBLE | WS_CHILD, 50, 200, 150, 40, hwnd, (HMENU)504, NULL, NULL);
-            CreateWindow("BUTTON", "5. Baan Pranee", WS_VISIBLE | WS_CHILD, 50, 250, 150, 40, hwnd, (HMENU)505, NULL, NULL);
+            CreateWindow("BUTTON", "1. Place A", WS_VISIBLE | WS_CHILD, 50, 50, 150, 40, hwnd, (HMENU)501, NULL, NULL);
+            CreateWindow("BUTTON", "2. Place B", WS_VISIBLE | WS_CHILD, 50, 100, 150, 40, hwnd, (HMENU)502, NULL, NULL);
+            CreateWindow("BUTTON", "3. Place C", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)503, NULL, NULL);
+            CreateWindow("BUTTON", "4. Place D", WS_VISIBLE | WS_CHILD, 50, 200, 150, 40, hwnd, (HMENU)504, NULL, NULL);
+            CreateWindow("BUTTON", "5. Place E", WS_VISIBLE | WS_CHILD, 50, 250, 150, 40, hwnd, (HMENU)505, NULL, NULL);
         } else if (zoneNumber == 3) {
             // เพิ่มปุ่มสำหรับ Zone 3
-            CreateWindow("BUTTON", "1. Warisa Apartment", WS_VISIBLE | WS_CHILD, 50, 50, 150, 40, hwnd, (HMENU)601, NULL, NULL);
-            CreateWindow("BUTTON", "2. P.S Mansion", WS_VISIBLE | WS_CHILD, 50, 100, 150, 40, hwnd, (HMENU)602, NULL, NULL);
-            CreateWindow("BUTTON", "3. Baan Tarnkam", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)603, NULL, NULL);
-            CreateWindow("BUTTON", "4. Tarnthong Place Apartment", WS_VISIBLE | WS_CHILD, 50, 200, 150, 40, hwnd, (HMENU)604, NULL, NULL);
-            CreateWindow("BUTTON", "5. Thongtara Monte", WS_VISIBLE | WS_CHILD, 50, 250, 150, 40, hwnd, (HMENU)605, NULL, NULL);
+            CreateWindow("BUTTON", "1. Spot X", WS_VISIBLE | WS_CHILD, 50, 50, 150, 40, hwnd, (HMENU)601, NULL, NULL);
+            CreateWindow("BUTTON", "2. Spot Y", WS_VISIBLE | WS_CHILD, 50, 100, 150, 40, hwnd, (HMENU)602, NULL, NULL);
+            CreateWindow("BUTTON", "3. Spot Z", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)603, NULL, NULL);
+            CreateWindow("BUTTON", "4. Spot W", WS_VISIBLE | WS_CHILD, 50, 200, 150, 40, hwnd, (HMENU)604, NULL, NULL);
+            CreateWindow("BUTTON", "5. Spot V", WS_VISIBLE | WS_CHILD, 50, 250, 150, 40, hwnd, (HMENU)605, NULL, NULL);
         }
         break;}
     case WM_COMMAND: {
@@ -393,19 +381,19 @@ LRESULT CALLBACK ZoneWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
             }
         } else if (zoneNumber == 2) {
             switch(buttonId) {
-                case 501: placeName = "Phufa Place"; break;
-                case 502: placeName = "The Greenery Landmark"; break;
-                case 503: placeName = "Porjai Apartment"; break;
-                case 504: placeName = "Kiang Doi Place"; break;
-                case 505: placeName = "Baan Pranee(JedYod)"; break;
+                case 501: placeName = "Place A"; break;
+                case 502: placeName = "Place B"; break;
+                case 503: placeName = "Place C"; break;
+                case 504: placeName = "Place D"; break;
+                case 505: placeName = "Place E"; break;
             }
         } else if (zoneNumber == 3) {
             switch(buttonId) {
-                case 601: placeName = "Warisa Apartment"; break;
-                case 602: placeName = "P.S Mansion"; break;
-                case 603: placeName = "Baan Tarnkam"; break;
-                case 604: placeName = "Tarnthong Place Apartment"; break;
-                case 605: placeName = "Thongtara Monte"; break;
+                case 601: placeName = "Spot X"; break;
+                case 602: placeName = "Spot Y"; break;
+                case 603: placeName = "Spot Z"; break;
+                case 604: placeName = "Spot W"; break;
+                case 605: placeName = "Spot V"; break;
             }
         }
     
@@ -463,12 +451,12 @@ LRESULT CALLBACK PlaceWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             // ปรับตำแหน่งปุ่มและข้อความสถานะให้อยู่ด้านล่าง
             CreateWindow("BUTTON", "Book", WS_VISIBLE | WS_CHILD, 50, 140, 150, 40, hwnd, (HMENU)701, NULL, NULL);
             CreateWindow("BUTTON", "Check Status", WS_VISIBLE | WS_CHILD, 50, 190, 150, 40, hwnd, (HMENU)702, NULL, NULL);
-            CreateWindow("BUTTON", "Cancel Booking", WS_VISIBLE | WS_CHILD, 50, 240, 150, 40, hwnd, (HMENU)704, NULL, NULL);
-            CreateWindow("BUTTON", "Back", WS_VISIBLE | WS_CHILD, 50, 290, 150, 40, hwnd, (HMENU)703, NULL, NULL);
+            CreateWindow("BUTTON", "cancel", WS_VISIBLE | WS_CHILD, 50, 240, 150, 40, hwnd, (HMENU)703, NULL, NULL);
+            CreateWindow("BUTTON", "Back", WS_VISIBLE | WS_CHILD, 50, 290, 150, 40, hwnd, (HMENU)704, NULL, NULL);
 
             hStatusText = CreateWindow("STATIC", GetBookingStatus(placeName).c_str(), 
             WS_VISIBLE | WS_CHILD | SS_CENTER, 
-            50, 340, 250, 60, hwnd, NULL, NULL, NULL);
+            50, 290, 250, 60, hwnd, NULL, NULL, NULL);
             break;
         }
         case WM_COMMAND: {
@@ -487,15 +475,15 @@ LRESULT CALLBACK PlaceWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                         "\n\nYour Account: " + currentUser).c_str(), 
                         "Booking Details", MB_OK);
                     break;
-                case 703: // Back
+                case 703:
+                if (WINLNWSUS(hwnd, placeName, currentUser)) {
+                    MessageBox(hwnd, "cancel","complete", MB_OK);
+                    // อัปเดตสถานะ
+                    SetWindowText(hStatusText, GetBookingStatus(placeName).c_str());
+                    
+                case 704: // Back
                     ShowZoneSelectionWindow(currentUser);
                     DestroyWindow(hwnd);
-                    break;
-                case 704: // Cancel Booking
-                    if (CancelBooking(hwnd, placeName, currentUser)) {
-                        MessageBox(hwnd, "Booking canceled!", "Success", MB_OK);
-                        SetWindowText(hStatusText, GetBookingStatus(placeName).c_str());
-                    }
                     break;
             }
             break;
@@ -508,6 +496,20 @@ LRESULT CALLBACK PlaceWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+bool WINLNWSUS(HWND hwnd, const std::string& place, const std::string& username) {
+    // ตรวจสอบห้องว่าง
+    if (roomAvailability[place] <= 0) {
+        MessageBox(hwnd, "Cancel","complete", MB_OK | MB_ICONERROR);
+        return false;
+    }
+
+   
+   // เพิ่มการจองและอัปเดตห้องว่าง
+   bookings.insert(std::make_pair(place, username));
+   roomAvailability[place]++;
+   SaveBookingsToFile();
+   return true;
+}
 
 bool BookPlace(HWND hwnd, const std::string& place, const std::string& username) {
     // ตรวจสอบห้องว่าง
@@ -523,6 +525,7 @@ bool BookPlace(HWND hwnd, const std::string& place, const std::string& username)
    SaveBookingsToFile();
    return true;
 }
+
 
 void SaveBookingsToFile() {
     std::ofstream file("bookings.txt", std::ios::trunc);
@@ -592,17 +595,4 @@ std::string GetBookingStatus(const std::string& place) {
     }
 
     return oss.str();
-}
-bool CancelBooking(HWND hwnd, const std::string& place, const std::string& username) {
-    auto range = bookings.equal_range(place);
-    for (auto it = range.first; it != range.second; ++it) {
-        if (it->second == username) {
-            bookings.erase(it);
-            roomAvailability[place]++;
-            SaveBookingsToFile();
-            return true;
-        }
-    }
-    MessageBox(hwnd, "You have not booked this place.", "Error", MB_OK | MB_ICONERROR);
-    return false;
 }

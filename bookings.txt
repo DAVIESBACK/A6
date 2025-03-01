@@ -1,28 +1,17 @@
 [Rooms]
 Baan Im Rak|7
-Baan Pranee(JedYod)|8
-Baan Tarnkam|3
 Home Hill|6
 Kai Golden|2
-Kiang Doi Place|5
-P.S Mansion|2
-Phufa Place|3
 Place A|3
 Place B|2
 Place C|1
 Place D|5
 Place E|8
-Porjai Apartment|1
 Sang|8
 Spot V|4
 Spot W|6
 Spot X|5
 Spot Y|2
 Spot Z|3
-Tarnthong Place Apartment|6
-The Greenery Landmark|2
-Thongtara Monte|4
 Unilof|5
-Unilof Chiangmai|5
-Warisa Apartment|5
 [Bookings]
