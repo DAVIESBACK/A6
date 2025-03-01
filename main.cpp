@@ -5,7 +5,12 @@
 #include <sstream>  // สำหรับ std::ostringstream
 #include <vector>   // สำหรับ std::vector
 
-
+std::map<std::string, std::string> placeDescriptions = {
+    {"Unilof", "Uniloft Chiangmai\nLocation:147 VillageNo. 14 Soi Ban Mai Behind Mo1 Suthep Subdistrict"},
+    {"Home Hill", "Home Hill \n:\n-\n- "},
+    {"Baan Im Rak", "Baan Im Rak "},
+    // ...
+};
 std::multimap<std::string, std::string> bookings;
 std::map<std::string, int> roomAvailability = {
     {"Unilof",5}, {"Home Hill",6}, {"Baan Im Rak",7}, {"Sang",8}, {"Kai Golden",2},
@@ -415,7 +420,7 @@ void ShowPlaceWindow(std::pair<std::string, std::string>* params) {
     HWND hPlaceWnd = CreateWindow(
         "PlaceWindow", params->first.c_str(),
         WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-        300, 300, NULL, NULL, hInst, params
+        400, 400, NULL, NULL, hInst, params // ปรับขนาดเป็น 400x400
     );
     ShowWindow(hPlaceWnd, SW_SHOW);
 }
@@ -432,25 +437,35 @@ LRESULT CALLBACK PlaceWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             placeName = params->first;
             currentUser = params->second;
             delete params;
+            // ตรวจสอบข้อมูลจาก Map
+            std::string description = placeDescriptions.count(placeName) 
+            ? placeDescriptions[placeName] 
+            : "No additional information available";
 
-            CreateWindow("BUTTON", "Book", WS_VISIBLE | WS_CHILD, 50, 50, 150, 40, hwnd, (HMENU)701, NULL, NULL);
-            CreateWindow("BUTTON", "Check Status", WS_VISIBLE | WS_CHILD, 50, 100, 150, 40, hwnd, (HMENU)702, NULL, NULL);
-            CreateWindow("BUTTON", "Back", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)703, NULL, NULL);
-            
+            // สร้าง Static Text สำหรับแสดงข้อมูลห้องพัก
+            CreateWindow("STATIC", description.c_str(), 
+            WS_VISIBLE | WS_CHILD | SS_LEFT, 
+            20, 20, 340, 100, hwnd, NULL, NULL, NULL);
+
+            // ปรับตำแหน่งปุ่มและข้อความสถานะให้อยู่ด้านล่าง
+            CreateWindow("BUTTON", "Book", WS_VISIBLE | WS_CHILD, 50, 140, 150, 40, hwnd, (HMENU)701, NULL, NULL);
+            CreateWindow("BUTTON", "Check Status", WS_VISIBLE | WS_CHILD, 50, 190, 150, 40, hwnd, (HMENU)702, NULL, NULL);
+            CreateWindow("BUTTON", "Back", WS_VISIBLE | WS_CHILD, 50, 240, 150, 40, hwnd, (HMENU)703, NULL, NULL);
+
             hStatusText = CreateWindow("STATIC", GetBookingStatus(placeName).c_str(), 
-                WS_VISIBLE | WS_CHILD | SS_CENTER, 
-                50, 200, 250, 60, hwnd, NULL, NULL, NULL);
+            WS_VISIBLE | WS_CHILD | SS_CENTER, 
+            50, 290, 250, 60, hwnd, NULL, NULL, NULL);
             break;
         }
         case WM_COMMAND: {
             switch (LOWORD(wParam)) {
                 case 701: // Book
-                    if (HasUserBooked(currentUser)) {
-                        MessageBox(hwnd, "You have already booked!", "Error", MB_OK | MB_ICONERROR);
-                    } else {
-                        BookPlace(hwnd, placeName, currentUser);
-                    }
-                    break;
+                if (BookPlace(hwnd, placeName, currentUser)) {
+                MessageBox(hwnd, "Booking successful!", "Success", MB_OK);
+                // อัปเดตสถานะ
+                SetWindowText(hStatusText, GetBookingStatus(placeName).c_str());
+            }
+            break;
                 case 702: // Check Status
                     MessageBox(hwnd, 
                         ("=== Current Status ===\n" + 
@@ -473,33 +488,20 @@ LRESULT CALLBACK PlaceWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-// ฟังก์ชันจัดการการจอง
-bool HasUserBooked(const std::string& username) {
-    for (const auto& booking : bookings) {
-        if (booking.second == username) return true;
-    }
-    return false;
-}
 
 bool BookPlace(HWND hwnd, const std::string& place, const std::string& username) {
-    // ตรวจสอบว่าผู้ใช้เคยจองแล้วหรือไม่
-    if (HasUserBooked(username)) {
-        std::string errorMsg = "You already booked another place!";
-        MessageBox(hwnd, errorMsg.c_str(), "Error", MB_OK | MB_ICONERROR);
-        return false;
-    }
-
     // ตรวจสอบห้องว่าง
     if (roomAvailability[place] <= 0) {
         MessageBox(hwnd, "This place is fully booked!", "Error", MB_OK | MB_ICONERROR);
         return false;
     }
 
-    // เพิ่มการจองและอัปเดตห้องว่าง
-    bookings.insert(std::make_pair(place, username));
-    roomAvailability[place]--;
-    SaveBookingsToFile();
-    return true;
+   
+   // เพิ่มการจองและอัปเดตห้องว่าง
+   bookings.insert(std::make_pair(place, username));
+   roomAvailability[place]--;
+   SaveBookingsToFile();
+   return true;
 }
 
 void SaveBookingsToFile() {
@@ -508,13 +510,13 @@ void SaveBookingsToFile() {
     // บันทึกจำนวนห้องคงเหลือ
     file << "[Rooms]\n";
     for (const auto& room : roomAvailability) {
-        file << room.first << "|" << room.second << "\n"; // ใช้ | เป็นตัวคั่น
+        file << room.first << "|" << room.second << "\n";
     }
 
     // บันทึกข้อมูลการจอง
     file << "[Bookings]\n";
     for (const auto& booking : bookings) {
-        file << booking.first << "|" << booking.second << "\n"; // ใช้ | เป็นตัวคั่น
+        file << booking.first << "|" << booking.second << "\n";
     }
 }
 
@@ -561,29 +563,13 @@ std::string GetBookingStatus(const std::string& place) {
     int remaining = roomAvailability[place];
     auto range = bookings.equal_range(place);
 
-    // รวบรวมชื่อผู้จอง
-    std::vector<std::string> users;
-    for (auto it = range.first; it != range.second; ++it) {
-        users.push_back(it->second);
-    }
+    oss << "Place: " << place << "\n";
+    oss << "Remaining Rooms: " << remaining << "\n";
+    oss << "Booked by:\n";
 
-    // สร้างข้อความแสดงผล
-    if (!users.empty()) {
-        oss << "Booked by: ";
-        for (size_t i = 0; i < users.size(); ++i) {
-            if (i > 0) {
-                if (i == users.size() - 1) {
-                    oss << " and ";
-                } else {
-                    oss << ", ";
-                }
-            }
-            oss << users[i];
-        }
-    } else {
-        oss << "Available";
+    for (auto it = range.first; it != range.second; ++it) {
+        oss << "- " << it->second << "\n";
     }
-    oss << "\nRemaining Rooms: " << remaining;
 
     return oss.str();
 }
