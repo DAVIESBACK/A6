@@ -6,21 +6,21 @@
 #include <vector>   // สำหรับ std::vector
 
 std::map<std::string, std::string> placeDescriptions = {
-    {"Unilof", "Location: 147 Ban Mai Behind Mo1 Suthep Subdistrict Mueang Chiang Mai District Chiang Mai 50200\nInformation\n5000 baht/month\nPhone : 053-328-181\tRating 5/5"},
-    {"Home Hill", "Location: 143 Soi 7 Suthep Road Suthep Muang Chiang Mai 50200\nInformation\n4500 baht/month\nPhone : 0947402458\nRating 4/5"},
-    {"Baan Im Rak", "Location: Ban Mai Road behind Mo Suthep Subdistrict Mueang Chiang Mai District 50200\nInformation\n4000 baht/month\nPhone : 053-328-421\nRating 4/5"},
-    {"Sang","Location 145 Moo 14 Soi Suthep 7 Chiang Mai 50200\nInformation\n5500 baht/month\nPhone: 0953468524\nRating 5/5"},
-    {"Kai Golden","Location: 192/1 Moo 14 Suthep Subdistrict Mueang District Chiang Mai Thailand\nInformation\n6000 baht/month\nPhone : 082 556 5353\nRating 5/5"},
-    {"Phufa Place","Location: 177/1 Moo 1 Khan Klong Chonlaprathan Road Chang Phueak Subdistrict Chiang Mai Municipality Chiang Mai Province 50300\nInformation\n4800 baht/month\nPhone: 084 611 1154\tRating 4/5"},
-    {"The Greenery Landmark","Location: 99/2 M.2 T.Chang Phuek Amphoe Muang Chiang Mai Thailand Chiang Mai\nInformation\n5200 baht/month\nPhone: 083 567 7117\nRating 5/5"},
-    {"Porjai Apartment","Location: Chang Khian-Ched Yot Road Chang Phueak Subdistrict Mueang Chiang Mai District 50300\nInformation\n4300 baht/month\nPhone : 084-357-6079\tRating 4/5"},
-    {"Kiang Doi Place","Location: 176 Moo 1 Chang Phueak Mueang Chiang Mai District 50300\nInformation\n4700 baht/month\nPhone: 053-400-402\nRating 4/5"},
-    {"Baan Pranee(JedYod)","Location: JedYod Chang Khian Road Chang Phueak Mueang Chiang Mai Chiang Mai\nInformation\n4600 baht/month\nPhone : 0812888585\nRating 4/5"},
-    {"Warisa Apartment","Location: 60 Khunklong Chonprathan Rd Tambon Su Thep Amphoe Mueang Chiang Mai Chang Wat Chiang Mai 50200 Chiang Mai Thailand Chiang Mai\nInformation\n4900 baht/month\nPhone : 0847431149\tRating 5/5"},
-    {"P.S Mansion","Location: 689/1-5 Chang Phueak Muang Chiang Mai 50300\nInformation\n5300 baht/month\nPhone : 098-9565639\nRating 4/5"},
-    {"Baan Tarnkam","Location: 456 Chiang Mai-Hang Dong Road  Mueang Chiang Mai District Chiang Mai\nInformation\n4200 baht/month\nPhone : 053-461-351\nRating 4/5"},
-    {"Tarnthong Place Apartment","Location: 188/8 Village No.10 Mueang Chiang Mai District Chiang Mai 50200\nInformation\n5100 baht/month\nPhone : 098-824-2223\nRating 5/5"},
-    {"Thongtara Monte","Location: Suthep Rd. Soi 2 Suthep Mueang Chiang Mai Chiang Mai\nInformation\n5700 baht/month\nPhone : 062-845-4665\nRating 4/5"}
+    {"Unilof", "Location : 147 Ban Mai Behind Mo1 Suthep Subdistrict Mueang Chiang Mai District Chiang Mai 50200\nInformation\nPrice : 5000 baht/month\nPhone : 053-328-181\tRating : 5/5\nlimit 2 People/room"},
+    {"Home Hill", "Location : 143 Soi 7 Suthep Road Suthep Muang Chiang Mai 50200\nInformation\nPrice : 4500 baht/month\nPhone : 0947402458\tRating : 4/5\nlimit 2 People/room"},
+    {"Baan Im Rak", "Location: Ban Mai Road behind Mo Suthep Subdistrict Mueang Chiang Mai District 50200\nInformation\nPrice : 4000 baht/month\nPhone : 053-328-421\tRating : 4/5\nlimit 2 People/room"},
+    {"Sang","Location : 145 Moo 14 Soi Suthep 7 Chiang Mai 50200\nInformation\nPrice : 5500 baht/month\nPhone : 0953468524\tRating : 5/5\nlimit 2 People/room"},
+    {"Kai Golden","Location : 192/1 Moo 14 Suthep Subdistrict Mueang District Chiang Mai Thailand\nInformation\nPrice : 6000 baht/month\nPhone : 082-556-5353\tRating : 5/5\nlimit 3 People/room"},
+    {"Phufa Place","Location : 177/1 Moo 1 Khan Klong Chonlaprathan Road Chang Phueak Subdistrict Chiang Mai Municipality Chiang Mai Province 50300\nInformation\nPrice : 4800 baht/month\nPhone : 084-611-1154\tRating : 4/5\nlimit 2 People/room"},
+    {"The Greenery Landmark","Location : 99/2 M.2 T.Chang Phuek Amphoe Muang Chiang Mai Thailand Chiang Mai\nInformation\nPrice : 5200 baht/month\nPhone: 083-567-7117\tRating : 5/5\nlimit 2 People/room"},
+    {"Porjai Apartment","Location : Chang Khian-Ched Yot Road Chang Phueak Subdistrict Mueang Chiang Mai District 50300\nInformation\nPrice : 4300 baht/month\nPhone : 084-357-6079\tRating : 4/5\nlimit 2 People/room"},
+    {"Kiang Doi Place","Location : 176 Moo 1 Chang Phueak Mueang Chiang Mai District 50300\nInformation\nPrice : 4700 baht/month\nPhone: 053-400-402\tRating : 4/5\nlimit 2 People/room"},
+    {"Baan Pranee(JedYod)","Location : JedYod Chang Khian Road Chang Phueak Mueang Chiang Mai Chiang Mai\nInformation\nPrice : 4600 baht/month\nPhone : 081-288-8585\tRating : 4/5\nlimit 2 People/room"},
+    {"Warisa Apartment","Location : 60 Khunklong Chonprathan Rd Tambon Su Thep Amphoe Mueang Chiang Mai Chang Wat Chiang Mai 50200 Chiang Mai Thailand Chiang Mai\nInformation\nPrice : 4900 baht/month\nPhone : 084-743-1149\tRating : 5/5\nlimit 2 People/room"},
+    {"P.S Mansion","Location : 689/1-5 Chang Phueak Muang Chiang Mai 50300\nInformation\nPrice : 5300 baht/month\nPhone : 098-956-5639\tRating : 4/5\nlimit 2 People/room"},
+    {"Baan Tarnkam","Location : 456 Chiang Mai-Hang Dong Road  Mueang Chiang Mai District Chiang Mai\nInformation\nPrice : 4200 baht/month\nPhone : 053-461-351\tRating : 4/5\nlimit 2 People/room"},
+    {"Tarnthong Place Apartment","Location : 188/8 Village No.10 Mueang Chiang Mai District Chiang Mai 50200\nInformation\nPrice : 5100 baht/month\nPhone : 098-824-2223\tRating : 5/5\nlimit 3 People/room"},
+    {"Thongtara Monte","Location : Suthep Rd. Soi 2 Suthep Mueang Chiang Mai Chiang Mai\nInformation\nPrice : 5700 baht/month\nPhone : 062-845-4665\tRating : 4/5\nlimit 3 People/room"}
 };
 std::multimap<std::string, std::string> bookings;
 std::map<std::string, int> roomAvailability = {
@@ -77,6 +77,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     wc.lpszClassName = "MainWindow";
     wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    
 
     if (!RegisterClass(&wc)) {
         MessageBox(NULL, "Window Registration Failed!", "Error", MB_ICONERROR | MB_OK);
@@ -343,6 +344,7 @@ LRESULT CALLBACK ZoneSelectionWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM
         CreateWindow("BUTTON", "Zone 1", WS_VISIBLE | WS_CHILD, 50, 50, 200, 40, hwnd, (HMENU)301, NULL, NULL);
         CreateWindow("BUTTON", "Zone 2", WS_VISIBLE | WS_CHILD, 50, 100, 200, 40, hwnd, (HMENU)302, NULL, NULL);
         CreateWindow("BUTTON", "Zone 3", WS_VISIBLE | WS_CHILD, 50, 150, 200, 40, hwnd, (HMENU)303, NULL, NULL);
+        CreateWindow("BUTTON", "Back", WS_VISIBLE | WS_CHILD, 50, 200, 200, 40, hwnd, (HMENU)304, NULL, NULL);
 
         break;
     }
@@ -358,6 +360,9 @@ LRESULT CALLBACK ZoneSelectionWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM
             break;
         case 303:
             ShowZoneWindow(3, currentUser); // แก้ไขให้ส่ง username
+            DestroyWindow(hwnd);
+            break;
+        case 304:
             DestroyWindow(hwnd);
             break;
         }
@@ -376,6 +381,8 @@ LRESULT CALLBACK ZoneSelectionWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM
     return 0;
 }
 
+
+
 //void khong auto kub nong
 void ResizeZoneButtons(HWND hwnd, int width, int height) {
     int buttonWidth = width / 3;   // Divide window width by 3 for even spacing
@@ -386,11 +393,14 @@ void ResizeZoneButtons(HWND hwnd, int width, int height) {
     HWND hZone1 = GetDlgItem(hwnd, 301);
     HWND hZone2 = GetDlgItem(hwnd, 302);
     HWND hZone3 = GetDlgItem(hwnd, 303);
+    HWND hBack = GetDlgItem(hwnd, 304);
 
     // Reposition and resize buttons
     MoveWindow(hZone1, (width - buttonWidth) / 2, height / 4, buttonWidth, buttonHeight, TRUE);
     MoveWindow(hZone2, (width - buttonWidth) / 2, height / 4 + buttonHeight + gap, buttonWidth, buttonHeight, TRUE);
     MoveWindow(hZone3, (width - buttonWidth) / 2, height / 4 + 2 * (buttonHeight + gap), buttonWidth, buttonHeight, TRUE);
+    MoveWindow(hBack, (width - buttonWidth) / 2, height / 4 + 3* (buttonHeight + gap), buttonWidth, buttonHeight, TRUE);
+
 }
 
 // ฟังก์ชันแสดงหน้าต่าง Zone
@@ -441,7 +451,7 @@ LRESULT CALLBACK ZoneWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
             CreateWindow("BUTTON", "2. The Greenery Landmark", WS_VISIBLE | WS_CHILD, 50, 100, 150, 40, hwnd, (HMENU)502, NULL, NULL);
             CreateWindow("BUTTON", "3. Porjai Apartment", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)503, NULL, NULL);
             CreateWindow("BUTTON", "4. Kiang Doi Place", WS_VISIBLE | WS_CHILD, 50, 200, 150, 40, hwnd, (HMENU)504, NULL, NULL);
-            CreateWindow("BUTTON", "5. Baan Pranee", WS_VISIBLE | WS_CHILD, 50, 250, 150, 40, hwnd, (HMENU)505, NULL, NULL);
+            CreateWindow("BUTTON", "5. Baan Pranee(JedYod)", WS_VISIBLE | WS_CHILD, 50, 250, 150, 40, hwnd, (HMENU)505, NULL, NULL);
             CreateWindow("BUTTON", "Back", WS_VISIBLE | WS_CHILD, 50, 300, 150, 40, hwnd, (HMENU)506, NULL, NULL);
         } else if (zoneNumber == 3) {
             CreateWindow("BUTTON", "1. Warisa Apartment", WS_VISIBLE | WS_CHILD, 50, 50, 150, 40, hwnd, (HMENU)601, NULL, NULL);
@@ -499,7 +509,7 @@ LRESULT CALLBACK ZoneWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
                 case 502: placeName = "The Greenery Landmark"; break;
                 case 503: placeName = "Porjai Apartment"; break;
                 case 504: placeName = "Kiang Doi Place"; break;
-                case 505: placeName = "Baan Pranee (JedYod)"; break;
+                case 505: placeName = "Baan Pranee(JedYod)"; break;
                 case 506: ShowZoneSelectionWindow(currentUser); DestroyWindow(hwnd); break;
             }
         } else if (zoneNumber == 3) {
@@ -571,13 +581,13 @@ LRESULT CALLBACK PlaceWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             // สร้าง Static Text สำหรับแสดงข้อมูลห้องพัก
             CreateWindow("STATIC", description.c_str(), 
             WS_VISIBLE | WS_CHILD | SS_LEFT, 
-            20, 20, 340, 100, hwnd, NULL, NULL, NULL);
+            30, 30, 340, 120, hwnd, NULL, NULL, NULL);
 
             // ปรับตำแหน่งปุ่มและข้อความสถานะให้อยู่ด้านล่าง
-            hBookButton = CreateWindow("BUTTON", "Book", WS_VISIBLE | WS_CHILD, 50, 140, 150, 40, hwnd, (HMENU)701, NULL, NULL);
-            hStatusButton = CreateWindow("BUTTON", "Check Status", WS_VISIBLE | WS_CHILD, 50, 190, 150, 40, hwnd, (HMENU)702, NULL, NULL);
-            hCancelButton = CreateWindow("BUTTON", "Cancel Booking", WS_VISIBLE | WS_CHILD, 50, 240, 150, 40, hwnd, (HMENU)704, NULL, NULL);
-            hBackButton = CreateWindow("BUTTON", "Back", WS_VISIBLE | WS_CHILD, 50, 290, 150, 40, hwnd, (HMENU)703, NULL, NULL);
+            hBookButton = CreateWindow("BUTTON", "Book", WS_VISIBLE | WS_CHILD, 50, 170, 150, 40, hwnd, (HMENU)701, NULL, NULL);
+            hStatusButton = CreateWindow("BUTTON", "Check Status", WS_VISIBLE | WS_CHILD, 50, 220, 150, 40, hwnd, (HMENU)702, NULL, NULL);
+            hCancelButton = CreateWindow("BUTTON", "Cancel Booking", WS_VISIBLE | WS_CHILD, 50, 270, 150, 40, hwnd, (HMENU)704, NULL, NULL);
+            hBackButton = CreateWindow("BUTTON", "Back", WS_VISIBLE | WS_CHILD, 50, 320, 150, 40, hwnd, (HMENU)703, NULL, NULL);
 
             hStatusText = CreateWindow("STATIC", GetBookingStatus(placeName).c_str(), 
             WS_VISIBLE | WS_CHILD | SS_CENTER, 
@@ -684,7 +694,7 @@ void LoadBookingsFromFile() {
         // ตั้งค่าเริ่มต้นเฉพาะเมื่อไม่มีไฟล์
         roomAvailability = {
             {"Unilof",10}, {"Home Hill",10}, {"Baan Im Rak",10}, {"Sang",10}, {"Kai Golden",10},
-            {"Phufa Place",10}, {"The Greenery Landmark",10}, {"Pojai Apartment",10}, {"Kiang Doi Place",10}, {"Baan Pranee (Jed Yod)",10},
+            {"Phufa Place",10}, {"The Greenery Landmark",10}, {"Pojai Apartment",10}, {"Kiang Doi Place",10}, {"Baan Pranee(JedYod)",10},
             {"Warisa Apartment",10}, {"P.S. Mansion",10}, {"Baan Tarnkam",10}, {"Tarnthong Place Apartment Chiangmai",10}, {"Thongtara Monte",10}
         };
         return;

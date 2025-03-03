@@ -7,3 +7,5 @@ purgatory purgatory
 c c
 
 a aaaaaaaa
+gang 00000000
+nat 99999999

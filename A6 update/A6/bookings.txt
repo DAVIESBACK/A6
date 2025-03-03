@@ -1,5 +1,6 @@
 [Rooms]
 Baan Im Rak|10
+Baan Pranee (JedYod)|0
 Baan Pranee(JedYod)|10
 Baan Tarnkam|10
 Home Hill|1
@@ -11,7 +12,7 @@ Porjai Apartment|1
 Sang|10
 Tarnthong Place Apartment|10
 The Greenery Landmark|2
-Thongtara Monte|10
+Thongtara Monte|9
 Unilof|2
 Warisa Apartment|10
 [Bookings]
@@ -47,6 +48,7 @@ Spot Z|3
 Tarnthong Place Apartment|6
 The Greenery Landmark|2
 Thongtara Monte|4
+Thongtara Monte|gang
 Unilof|q
 Unilof|q
 Unilof|q
