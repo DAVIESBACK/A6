@@ -35,7 +35,7 @@ HWND hUsername, hPassword, hConfirmPassword;
 
 #define ID_LOGIN_BUTTON 201
 #define ID_SIGNUP_BUTTON 202
-#define ID_EXIT_BUTTON 203
+#define ID_LOGOUT_BUTTON 203
 #define ID_SUBMIT_LOGIN 204
 #define ID_SUBMIT_SIGNUP 205
 #define ID_CANCEL_BOOKING 704
@@ -134,7 +134,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
     case WM_CREATE:
         CreateWindow("BUTTON", "Login", WS_VISIBLE | WS_CHILD, 50, 50, 150, 40, hwnd, (HMENU)ID_LOGIN_BUTTON, NULL, NULL);
         CreateWindow("BUTTON", "Sign Up", WS_VISIBLE | WS_CHILD, 50, 100, 150, 40, hwnd, (HMENU)ID_SIGNUP_BUTTON, NULL, NULL);
-        CreateWindow("BUTTON", "Exit", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)ID_EXIT_BUTTON, NULL, NULL);
+        CreateWindow("BUTTON", "Logout", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)ID_LOGOUT_BUTTON, NULL, NULL);
         break;
     case WM_COMMAND:
         switch (LOWORD(wParam)) {
@@ -144,8 +144,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
         case ID_SIGNUP_BUTTON:
             ShowAuthWindow(true);
             break;
-        case ID_EXIT_BUTTON:
-            PostQuitMessage(0);
+        case ID_LOGOUT_BUTTON:
+        ShowAuthWindow(false);
             break;
         }
         break;
@@ -170,7 +170,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 void CreateAppButtons(HWND hwnd, HINSTANCE hInstance) {
     CreateWindow("BUTTON", "Login", WS_VISIBLE | WS_CHILD, 50, 50, 150, 40, hwnd, (HMENU)ID_LOGIN_BUTTON, hInstance, NULL);
     CreateWindow("BUTTON", "Sign Up", WS_VISIBLE | WS_CHILD, 50, 100, 150, 40, hwnd, (HMENU)ID_SIGNUP_BUTTON, hInstance, NULL);
-    CreateWindow("BUTTON", "Exit", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)ID_EXIT_BUTTON, hInstance, NULL);
+    CreateWindow("BUTTON", "Logout", WS_VISIBLE | WS_CHILD, 50, 150, 150, 40, hwnd, (HMENU)ID_LOGOUT_BUTTON, hInstance, NULL);
 }
 
 void ResizeButtons(HWND hwnd, int width, int height) {
@@ -181,12 +181,12 @@ void ResizeButtons(HWND hwnd, int width, int height) {
     // Get buttons by handle
     HWND hLogin = GetDlgItem(hwnd, ID_LOGIN_BUTTON);
     HWND hSignup = GetDlgItem(hwnd, ID_SIGNUP_BUTTON);
-    HWND hExit = GetDlgItem(hwnd, ID_EXIT_BUTTON);
+    HWND hLogout = GetDlgItem(hwnd, ID_LOGOUT_BUTTON);
 
     // Reposition and resize buttons
     MoveWindow(hLogin, (width - buttonWidth) / 2, height / 4, buttonWidth, buttonHeight, TRUE);
     MoveWindow(hSignup, (width - buttonWidth) / 2, height / 4 + buttonHeight + gap, buttonWidth, buttonHeight, TRUE);
-    MoveWindow(hExit, (width - buttonWidth) / 2, height / 4 + 2 * (buttonHeight + gap), buttonWidth, buttonHeight, TRUE);
+    MoveWindow(hLogout, (width - buttonWidth) / 2, height / 4 + 2 * (buttonHeight + gap), buttonWidth, buttonHeight, TRUE);
 }
 
 
