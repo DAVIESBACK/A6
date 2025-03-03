@@ -584,10 +584,10 @@ LRESULT CALLBACK PlaceWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             30, 30, 340, 120, hwnd, NULL, NULL, NULL);
 
             // ปรับตำแหน่งปุ่มและข้อความสถานะให้อยู่ด้านล่าง
-            hBookButton = CreateWindow("BUTTON", "Book", WS_VISIBLE | WS_CHILD, 50, 170, 150, 40, hwnd, (HMENU)701, NULL, NULL);
-            hStatusButton = CreateWindow("BUTTON", "Check Status", WS_VISIBLE | WS_CHILD, 50, 220, 150, 40, hwnd, (HMENU)702, NULL, NULL);
-            hCancelButton = CreateWindow("BUTTON", "Cancel Booking", WS_VISIBLE | WS_CHILD, 50, 270, 150, 40, hwnd, (HMENU)704, NULL, NULL);
-            hBackButton = CreateWindow("BUTTON", "Back", WS_VISIBLE | WS_CHILD, 50, 320, 150, 40, hwnd, (HMENU)703, NULL, NULL);
+            hBookButton = CreateWindow("BUTTON", "Book", WS_VISIBLE | WS_CHILD, 50, 200, 150, 40, hwnd, (HMENU)701, NULL, NULL);
+            hStatusButton = CreateWindow("BUTTON", "Check Status", WS_VISIBLE | WS_CHILD, 50, 250, 150, 40, hwnd, (HMENU)702, NULL, NULL);
+            hCancelButton = CreateWindow("BUTTON", "Cancel Booking", WS_VISIBLE | WS_CHILD, 50, 300, 150, 40, hwnd, (HMENU)704, NULL, NULL);
+            hBackButton = CreateWindow("BUTTON", "Back", WS_VISIBLE | WS_CHILD, 50, 350, 150, 40, hwnd, (HMENU)703, NULL, NULL);
 
             hStatusText = CreateWindow("STATIC", GetBookingStatus(placeName).c_str(), 
             WS_VISIBLE | WS_CHILD | SS_CENTER, 
@@ -607,10 +607,10 @@ LRESULT CALLBACK PlaceWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             int buttonHeight = 40;
             int buttonX = (width - buttonWidth) / 2;
 
-            SetWindowPos(hBookButton, NULL, buttonX, 140, buttonWidth, buttonHeight, SWP_NOZORDER);
-            SetWindowPos(hStatusButton, NULL, buttonX, 190, buttonWidth, buttonHeight, SWP_NOZORDER);
-            SetWindowPos(hCancelButton, NULL, buttonX, 240, buttonWidth, buttonHeight, SWP_NOZORDER);
-            SetWindowPos(hBackButton, NULL, buttonX, 290, buttonWidth, buttonHeight, SWP_NOZORDER);
+            SetWindowPos(hBookButton, NULL, buttonX, 200, buttonWidth, buttonHeight, SWP_NOZORDER);
+            SetWindowPos(hStatusButton, NULL, buttonX, 250, buttonWidth, buttonHeight, SWP_NOZORDER);
+            SetWindowPos(hCancelButton, NULL, buttonX, 300, buttonWidth, buttonHeight, SWP_NOZORDER);
+            SetWindowPos(hBackButton, NULL, buttonX, 350, buttonWidth, buttonHeight, SWP_NOZORDER);
 
             // Resize status text
             SetWindowPos(hStatusText, NULL, (width - 250) / 2, height - 80, 250, 35, SWP_NOZORDER);
@@ -693,7 +693,7 @@ void LoadBookingsFromFile() {
     if (!file) {
         // ตั้งค่าเริ่มต้นเฉพาะเมื่อไม่มีไฟล์
         roomAvailability = {
-            {"Unilof",10}, {"Home Hill",10}, {"Baan Im Rak",10}, {"Sang",10}, {"Kai Golden",10},
+            {"Unilof",5}, {"Home Hill",5}, {"Baan Im Rak",4}, {"Sang",1}, {"Kai Golden",4},
             {"Phufa Place",10}, {"The Greenery Landmark",10}, {"Pojai Apartment",10}, {"Kiang Doi Place",10}, {"Baan Pranee(JedYod)",10},
             {"Warisa Apartment",10}, {"P.S. Mansion",10}, {"Baan Tarnkam",10}, {"Tarnthong Place Apartment Chiangmai",10}, {"Thongtara Monte",10}
         };
